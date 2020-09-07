@@ -4,6 +4,6 @@ grupo_4
 
 | Nombre y Apellido              |      Mail                      |     usuario Gitlab   |
 | -----------------------------  | ------------------------------ | -------------------  |
-|                                |                                |                      |
-|           Federico Sandoval                     |fede.sandoval99@gmail.com                                |f.sandoval                      |
+|  Nicolas Martínez              |martinez.nicolas0510@gmail.com  | nicolasmartinez                      |
+|  Federico Sandoval             |fede.sandoval99@gmail.com       |f.sandoval                      |
 

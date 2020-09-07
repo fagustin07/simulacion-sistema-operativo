@@ -1,11 +1,10 @@
-from hardware import *
-from so import *
-import log
-
-
 ##
 ##  MAIN 
 ##
+import log
+from hardware import HARDWARE, ASM
+from so import Kernel, Program
+
 if __name__ == '__main__':
     log.setupLogger()
     log.logger.info('Starting emulator')
@@ -21,6 +20,3 @@ if __name__ == '__main__':
     
     # execute the program
     kernel.run(prg)
-
-
-
