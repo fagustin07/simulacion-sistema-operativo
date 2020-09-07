@@ -72,5 +72,9 @@ class Kernel():
             HARDWARE.cpu.tick(i)
             sleep(1)
 
+    def executeBatch(self, batch):
+        for program in batch:
+            self.run(program)
+
     def __repr__(self):
         return "Kernel "
