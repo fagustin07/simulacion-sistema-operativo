@@ -63,8 +63,11 @@ class KillInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         log.logger.info(" Program Finished ")
-        # por ahora apagamos el hardware porque estamos ejecutando un solo programa
-        HARDWARE.switchOff()
+        if not self.kernel.haveNext():
+            # por ahora apagamos el hardware porque estamos ejecutando un solo programa
+            HARDWARE.switchOff()
+        else:
+            self.kernel.runNext()
 
 
 # emulates the core of an Operative System
@@ -74,6 +77,8 @@ class Kernel():
         ## setup interruption handlers
         killHandler = KillInterruptionHandler(self)
         HARDWARE.interruptVector.register(KILL_INTERRUPTION_TYPE, killHandler)
+        self._batch = []
+
 
     def load_program(self, program):
         # loads the program in main memory  
@@ -94,3 +99,16 @@ class Kernel():
 
     def __repr__(self):
         return "Kernel "
+
+    def runNext(self):
+        self.run(self._batch[0])
+        self._batch.pop(0)
+
+
+    def executeBatch(self,batch):
+        self._batch = batch
+        self.runNext()
+
+    def haveNext(self):
+        return len(self._batch) != 0
+
