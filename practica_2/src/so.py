@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from hardware import *
-import log
-
-
 
 ## emulates a compiled program
+from src import log
+from src.hardware import HARDWARE, ASM, INSTRUCTION_EXIT, KILL_INTERRUPTION_TYPE
+
+
 class Program():
 
     def __init__(self, name, instructions):
@@ -21,7 +21,7 @@ class Program():
         return self._instructions
 
     def addInstr(self, instruction):
-        self._instructions.append(instruction)
+        self._instructions.insert(len(self._instructions) - 1, instruction)
 
     def expand(self, instructions):
         expanded = []
@@ -32,7 +32,7 @@ class Program():
             else:
                 ## a single instr (a String)
                 expanded.append(i)
-            
+
         ## now test if last instruction is EXIT
         ## if not... add an EXIT as final instruction
         last = expanded[-1]
@@ -58,36 +58,34 @@ class AbstractInterruptionHandler():
         log.logger.error("-- EXECUTE MUST BE OVERRIDEN in class {classname}".format(classname=self.__class__.__name__))
 
 
-
 class KillInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         log.logger.info(" Program Finished ")
-        if not self.kernel.haveNext():
-            # por ahora apagamos el hardware porque estamos ejecutando un solo programa
-            HARDWARE.switchOff()
+
+        if self.kernel.have_next():
+            self.kernel.run_actual()
         else:
-            self.kernel.runNext()
+            HARDWARE.switchOff()
 
 
 # emulates the core of an Operative System
-class Kernel():
+class Kernel:
 
     def __init__(self):
+        self._batch = []
         ## setup interruption handlers
         killHandler = KillInterruptionHandler(self)
         HARDWARE.interruptVector.register(KILL_INTERRUPTION_TYPE, killHandler)
-        self._batch = []
-
 
     def load_program(self, program):
-        # loads the program in main memory  
+        # loads the program in main memory
         progSize = len(program.instructions)
         for index in range(0, progSize):
             inst = program.instructions[index]
             HARDWARE.memory.write(index, inst)
 
-    ## emulates a "system call" for programs execution  
+    ## emulates a "system call" for programs execution
     def run(self, program):
         self.load_program(program)
         log.logger.info("\n Executing program: {name}".format(name=program.name))
@@ -96,19 +94,16 @@ class Kernel():
         # set CPU program counter at program's first intruction
         HARDWARE.cpu.pc = 0
 
-
-    def __repr__(self):
-        return "Kernel "
-
-    def runNext(self):
+    def run_actual(self):
         self.run(self._batch[0])
         self._batch.pop(0)
 
-
-    def executeBatch(self,batch):
+    def execute_batch(self, batch):
         self._batch = batch
-        self.runNext()
+        self.run_actual()
 
-    def haveNext(self):
+    def have_next(self):
         return len(self._batch) != 0
 
+    def __repr__(self):
+        return "Kernel "
