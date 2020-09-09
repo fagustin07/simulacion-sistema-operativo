@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from tabulate import tabulate
+from src.tabulate import tabulate
 from time import sleep
-import log
-from threading import Thread, Lock
+from src import log
+from threading import Thread
 
 ##  Estas son la instrucciones soportadas por nuestro CPU
 INSTRUCTION_IO = 'IO'
@@ -68,7 +68,7 @@ class InterruptVector():
         self._handlers[interruptionType] = interruptionHandler
 
     def handle(self, irq):
-        log.logger.info("Handling {type} irq with parameters = {parameters}".format(type=irq.type, parameters=irq.parameters ))
+        log.logger.info("Handling {type} irq with parameters = {parameters}".format(type=irq.type, parameters=irq.parameters))
         self._handlers[irq.type].execute(irq)
 
 

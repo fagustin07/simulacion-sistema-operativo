@@ -77,7 +77,7 @@ prg3 = Program("prg3.exe", [ASM.CPU(3)])
 
 batch = [prg1, prg2, prg3]
 # execute the program
-kernel.executeBatch(batch)
+kernel.execute_batch(batch)
 ```
 
 4. Hay que modificar el KillInterruptionHandler para que apague la maquina sólo cuando termine el ultimo proceso (solo podemos tocar el __Sistema Operativo__, sin modificar el __Hardware__)
