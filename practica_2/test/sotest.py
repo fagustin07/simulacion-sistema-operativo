@@ -10,7 +10,7 @@ class KernelTest(unittest.TestCase):
         HARDWARE.setup(20)
         kernel = Kernel()
 
-        self.assertFalse(kernel.have_programs())
+        self.assertFalse(kernel.has_programs())
 
     def test_aKernelCanExecuteABatchWithOneProgram(self):
         HARDWARE.setup(20)
@@ -21,7 +21,7 @@ class KernelTest(unittest.TestCase):
 
         self.assertEqual(INSTRUCTION_CPU, HARDWARE.memory.read(0))
         self.assertEqual(INSTRUCTION_EXIT, HARDWARE.memory.read(1))
-        self.assertFalse(kernel.have_programs())
+        self.assertFalse(kernel.has_programs())
 
     def test_aKernelWhoExecuteABatchWithMoreThanOneProgramHaveProgramsToExecute(self):
         HARDWARE.setup(20)
@@ -30,7 +30,7 @@ class KernelTest(unittest.TestCase):
         prg2 = Program('unnamed.exe', ASM.CPU(3))
 
         kernel.execute_batch([prg1, prg2])
-        self.assertTrue(kernel.have_programs())
+        self.assertTrue(kernel.has_programs())
 
     def test_aKernelCanRunABatch(self):
         HARDWARE.setup(20)
@@ -38,11 +38,10 @@ class KernelTest(unittest.TestCase):
         prg1 = Program('hi.exe', ASM.CPU(3))
         prg2 = Program('unnamed.exe', ASM.CPU(3))
 
-
-        kernel.execute_batch([prg1,prg2])
+        kernel.execute_batch([prg1, prg2])
         kernel.run_first()
 
-        self.assertFalse(kernel.have_programs())
+        self.assertFalse(kernel.has_programs())
 
 
 class ProgramTest(unittest.TestCase):
@@ -51,7 +50,6 @@ class ProgramTest(unittest.TestCase):
         prg = Program('test.exe', [ASM.CPU(2)])
 
         self.assertEqual(3, len(prg.instructions))
-
 
     def test_aProgramCanAddNewInstruction(self):
         prg = Program('test.exe', [ASM.CPU(2)])

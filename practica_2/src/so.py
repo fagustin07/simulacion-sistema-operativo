@@ -63,7 +63,7 @@ class KillInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         log.logger.info(" Program Finished ")
 
-        if self.kernel.have_programs():
+        if self.kernel.has_programs():
             self.kernel.run_first()
         else:
             HARDWARE.switchOff()
@@ -102,7 +102,7 @@ class Kernel:
         self._batch = batch
         self.run_first()
 
-    def have_programs(self):
+    def has_programs(self):
         return len(self._batch) != 0
 
     def __repr__(self):
