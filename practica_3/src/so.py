@@ -171,12 +171,14 @@ class Loader:
         return self._free_cell
 
     def load(self, program):
+        base_dir = self.free_cell
         progSize = len(program.instructions)
         for index in range(0, progSize):
             inst = program.instructions[index]
             inst_cell = index + self.free_cell
             HARDWARE.memory.write(inst_cell, inst)
             self._free_cell += 1
+        return base_dir
 
 
 NEW_STATUS = 'new'
@@ -193,6 +195,14 @@ class PCB:
         self._pid = pid
         self._status = NEW_STATUS
         self._pc = 0
+
+    @property
+    def pc(self):
+        return self._pc
+
+    @pc.setter
+    def pc(self, value):
+        self._pc = value
 
     @property
     def base_dir(self):
@@ -241,3 +251,18 @@ class PCBTable:
         pid_to_provide = self.pid
         self._pid += 1
         return pid_to_provide
+
+
+class Dispatcher:
+
+    def __init__(self):
+        pass
+
+    def load(self, a_pcb):
+        HARDWARE.cpu.pc = a_pcb.pc
+        HARDWARE.mmu.baseDir = a_pcb.base_dir
+
+    def save(self, a_pcb):
+        a_pcb.pc = HARDWARE.cpu.pc + 1
+        HARDWARE.cpu.pc = -1
+        HARDWARE.mmu.baseDir = 0
