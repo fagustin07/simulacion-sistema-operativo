@@ -19,12 +19,14 @@ if __name__ == '__main__':
     kernel = Kernel()
 
     ##  create a program
-    prg = Program("test.exe", [ASM.CPU(2), ASM.IO(), ASM.CPU(3), ASM.IO(), ASM.CPU(3)])
-    prg2 = Program("test.exe", [ASM.CPU(4)])
+    prg = Program("test.exe", [ASM.CPU(2), ASM.IO(), ASM.CPU(2), ASM.IO(), ASM.CPU(3)])
+    prg2 = Program("test.exe", [ASM.CPU(4), ASM.IO()])
+    prg3 = Program("test.exe", [ASM.IO(), ASM.CPU(2)])
 
     # execute the program
     kernel.run(prg)
     kernel.run(prg2)
+    kernel.run(prg3)
 
 
 

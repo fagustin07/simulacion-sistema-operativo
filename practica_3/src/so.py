@@ -98,25 +98,34 @@ class AbstractInterruptionHandler():
     def execute(self, irq):
         log.logger.error("-- EXECUTE MUST BE OVERRIDEN in class {classname}".format(classname=self.__class__.__name__))
 
+    #Los nombres te los debo
+    def check_next_if_exist(self):
+        if not self.kernel.ready_queue.isEmpty():
+            next_pcb = self.kernel.ready_queue.next()
+            next_pcb.status = RUNNING_STATUS
+            self.kernel.pcb_table.running_pcb = next_pcb
+            DISPATCHER.load(next_pcb)
+
+    def run_or_add_to_ready_queue(self,a_pcb):
+        if self.kernel.pcb_table.running_pcb is None:
+            a_pcb.status = RUNNING_STATUS
+            self.kernel.pcb_table.running_pcb = a_pcb
+            DISPATCHER.load(a_pcb)
+        else:
+            a_pcb.status = READY_STATUS
+            self.kernel.ready_queue.add(a_pcb)
+
+
 class NewInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
-        pid = PCB_TABLE.ask_pid()
+        pid = self.kernel.pcb_table.ask_pid()
         base_dir = LOADER.load(irq.parameters)
 
         new_pcb = PCB(pid,base_dir)
-        PCB_TABLE.add(new_pcb)
+        self.kernel.pcb_table.add(new_pcb)
 
-        if PCB_TABLE.running_pcb is None:
-            new_pcb.status = RUNNING_STATUS
-            PCB_TABLE.running_pcb = new_pcb
-            DISPATCHER.load(new_pcb)
-        else:
-            new_pcb.status = READY_STATUS
-            READY_QUEUE.add(new_pcb)
-
-
-
+        self.run_or_add_to_ready_queue(new_pcb)
 
 
 class KillInterruptionHandler(AbstractInterruptionHandler):
@@ -124,43 +133,34 @@ class KillInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         log.logger.info(" Program Finished ")
 
-        pcb_to_kill = PCB_TABLE.running_pcb
+        pcb_to_kill = self.kernel.pcb_table.running_pcb
         pcb_to_kill.status = FINISHED_STATUS
-        PCB_TABLE.running_pcb = None
+        self.kernel.pcb_table.running_pcb = None
         DISPATCHER.save(pcb_to_kill)
 
-        if not READY_QUEUE.isEmpty():
-            next_pcb = READY_QUEUE.next()
-            next_pcb.status = RUNNING_STATUS
-            PCB_TABLE.running_pcb = next_pcb
-            DISPATCHER.load(next_pcb)
-
+        self.check_next_if_exist()
 
 class IoInInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         operation = irq.parameters
-        io_in_pcb = PCB_TABLE.running_pcb
-        PCB_TABLE.running_pcb = None
+        io_in_pcb = self.kernel.pcb_table.running_pcb
+        self.kernel.pcb_table.running_pcb = None
         DISPATCHER.save(io_in_pcb)
         io_in_pcb.status = WAITING_STATUS
 
         self.kernel.ioDeviceController.runOperation(io_in_pcb,operation)
         log.logger.info(self.kernel.ioDeviceController)
 
-        ## ESTO HAY QUE SACARLO A UNA SUBTAREA, SE REPITE MUCHO
-        if not READY_QUEUE.isEmpty():
-            next_pcb = READY_QUEUE.next()
-            next_pcb.status = RUNNING_STATUS
-            PCB_TABLE.running_pcb = next_pcb
-            DISPATCHER.load(next_pcb)
+        self.check_next_if_exist()
 
 class IoOutInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
-        pcb = self.kernel.ioDeviceController.getFinishedPCB()
-        HARDWARE.cpu.pc = pcb['pc']
+        io_out_pcb = self.kernel.ioDeviceController.getFinishedPCB()
         log.logger.info(self.kernel.ioDeviceController)
+
+        self.run_or_add_to_ready_queue(io_out_pcb)
 
 
 # emulates the core of an Operative System
@@ -184,16 +184,21 @@ class Kernel():
         ## controls the Hardware's I/O Device
         self._ioDeviceController = IoDeviceController(HARDWARE.ioDevice)
 
+        #Service
+        self._pcb_table = PCBTable()
+        self._ready_queue = ReadyQueue()
+
+    @property
+    def ready_queue(self):
+        return self._ready_queue
+
     @property
     def ioDeviceController(self):
         return self._ioDeviceController
 
-    def load_program(self, program):
-        # loads the program in main memory
-        progSize = len(program.instructions)
-        for index in range(0, progSize):
-            inst = program.instructions[index]
-            HARDWARE.memory.write(index, inst)
+    @property
+    def pcb_table(self):
+        return self._pcb_table
 
     ## emulates a "system call" for programs execution
     def run(self, program):
@@ -201,18 +206,8 @@ class Kernel():
         HARDWARE.interruptVector.handle(newIRQ)
 
 
-
-
-
-        # self.load_program(program)
-        # log.logger.info("\n Executing program: {name}".format(name=program.name))
-        # log.logger.info(HARDWARE)
-        #
-        # # set CPU program counter at program's first intruction
-        # HARDWARE.cpu.pc = 0
-
-    def __repr__(self):
-        return "Kernel "
+def __repr__(self):
+    return "Kernel "
 
 
 class Loader():
@@ -322,7 +317,7 @@ class Dispatcher():
         HARDWARE.mmu.baseDir = 0
 
 
-class Ready_Queue():
+class ReadyQueue():
     def __init__(self):
         self._queue = []
 
@@ -334,11 +329,10 @@ class Ready_Queue():
     def add(self, pcb):
         self._queue.append(pcb)
 
+    #No se que tan necesario es esto
     def isEmpty(self):
         return len(self._queue) == 0
 
 
-READY_QUEUE = Ready_Queue()
 LOADER = Loader()
-PCB_TABLE = PCBTable()
 DISPATCHER = Dispatcher()
