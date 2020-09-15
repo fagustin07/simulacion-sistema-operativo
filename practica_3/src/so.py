@@ -119,10 +119,11 @@ class AbstractInterruptionHandler():
 class NewInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
+        program = irq.parameters
         pid = self.kernel.pcb_table.ask_pid()
-        base_dir = LOADER.load(irq.parameters)
+        base_dir = LOADER.load(program)
 
-        new_pcb = PCB(pid, base_dir)
+        new_pcb = PCB(pid, base_dir, program.name)
         self.kernel.pcb_table.add(new_pcb)
 
         self.run_or_add_to_ready_queue(new_pcb)
@@ -240,11 +241,12 @@ FINISHED_STATUS = 'finished'
 
 class PCB():
 
-    def __init__(self, pid, base_dir):
+    def __init__(self, pid, base_dir, path):
         self._base_dir = base_dir
         self._pid = pid
         self._status = NEW_STATUS
         self._pc = 0
+        self._path = path
 
     @property
     def pc(self):
@@ -274,6 +276,8 @@ class PCB():
     def pid(self):
         return self._pid
 
+    def __repr__(self):
+        return self._path
 
 class PCBTable():
 
@@ -309,13 +313,12 @@ class Dispatcher():
         pass
 
     def load(self, a_pcb):
-        HARDWARE.cpu.pc = a_pcb.pc
         HARDWARE.mmu.baseDir = a_pcb.base_dir
+        HARDWARE.cpu.pc = a_pcb.pc
 
     def save(self, a_pcb):
-        a_pcb.pc = HARDWARE.cpu.pc + 1
+        a_pcb.pc = HARDWARE.cpu.pc
         HARDWARE.cpu.pc = -1
-        HARDWARE.mmu.baseDir = 0
 
 
 class ReadyQueue():

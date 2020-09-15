@@ -20,8 +20,8 @@ if __name__ == '__main__':
 
     ##  create a program
     prg = Program("test.exe", [ASM.CPU(2), ASM.IO(), ASM.CPU(2), ASM.IO(), ASM.CPU(3)])
-    prg2 = Program("test.exe", [ASM.CPU(4), ASM.IO()])
-    prg3 = Program("test.exe", [ASM.IO(), ASM.CPU(2)])
+    prg2 = Program("paint.exe", [ASM.CPU(4), ASM.IO()])
+    prg3 = Program("formula-mate.exe", [ASM.IO(), ASM.CPU(2)])
 
     # execute the program
     kernel.run(prg)
