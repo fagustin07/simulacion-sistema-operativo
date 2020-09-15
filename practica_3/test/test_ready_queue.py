@@ -1,13 +1,14 @@
 import unittest
 
-from src.so import PCB, PCBTable, ReadyQueue
+from src.so import ReadyQueue
+from src.so_files.pcb_managment import PCBTable, PCB
 
 
 class ReadyQueueTest(unittest.TestCase):
 
     def setUp(self) -> None:
         new_pid = PCBTable().ask_pid()
-        self.new_pcb = PCB(new_pid,0)
+        self.new_pcb = PCB(new_pid, 0, 'tests.exe')
         self.queue = ReadyQueue()
 
     def test_a_new_ready_queue_is_empty(self):

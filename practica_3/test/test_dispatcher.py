@@ -1,7 +1,9 @@
 import unittest
 
 from src.hardware import ASM, HARDWARE
-from src.so import Dispatcher, PCB, Loader, Program
+from src.so import Program
+from src.so_files.memory_drivers import Loader, Dispatcher
+from src.so_files.pcb_managment import PCB
 
 
 class DispatcherTest(unittest.TestCase):
@@ -14,7 +16,7 @@ class DispatcherTest(unittest.TestCase):
         base_dir = loader.load(prg)
 
         self.dispatcher = Dispatcher()
-        self.pcb = PCB(1, base_dir)
+        self.pcb = PCB(1, base_dir, 'program.exe')
 
     def test_dispatcher_load_pcb(self):
 
@@ -29,9 +31,8 @@ class DispatcherTest(unittest.TestCase):
 
         self.dispatcher.save(self.pcb)
 
-        self.assertEqual(HARDWARE.mmu.baseDir, 0)
         self.assertEqual(HARDWARE.cpu.pc, -1)
-        self.assertEqual(self.pcb.pc, 1)
+        self.assertEqual(self.pcb.pc, 0)
 
 
 if __name__ == '__main__':

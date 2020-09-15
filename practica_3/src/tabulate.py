@@ -1205,7 +1205,7 @@ def tabulate(tabular_data, headers=(), tablefmt="simple",
     \\end{tabular}
 
     "latex_raw" is similar to "latex", but doesn't escape special characters,
-    such as backslash and underscore, so LaTeX commands may embedded into
+    such as backslash and underscore, so_files LaTeX commands may embedded into
     cells' values:
 
     >>> print(tabulate([["spam$_9$", 41.9999], ["\\\\emph{eggs}", "451.0"]], tablefmt="latex_raw"))

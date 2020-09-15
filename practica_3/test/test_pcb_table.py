@@ -1,13 +1,13 @@
 import unittest
 
-from src.so import PCBTable, PCB
+from src.so_files.pcb_managment import PCBTable, PCB
 
 
 class PCBTableTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.pcb_table = PCBTable()
-        self.pcb = PCB(self.pcb_table.ask_pid(), 0)
+        self.pcb = PCB(self.pcb_table.ask_pid(), 0, 'hello.exe')
 
     def test_pcbTableStartWithoutPCBRunning(self):
         self.assertEqual(self.pcb_table.running_pcb, None)

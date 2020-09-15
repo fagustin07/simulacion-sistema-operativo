@@ -1,9 +1,11 @@
-from src.so import *
 from src import log
+from src.hardware import HARDWARE, ASM
 
 ##
 ##  MAIN 
 ##
+from src.so import Program, Kernel
+
 if __name__ == '__main__':
     log.setupLogger()
     log.logger.info('Starting emulator')

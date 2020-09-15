@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 from src.hardware import *
-from src import log
+from src.hardware import HARDWARE
+from src.so_files.interruptions_handlers import *
+from src.so_files.pcb_managment import PCBTable
+
 
 ## emulates a compiled program
-from src.hardware import HARDWARE
-
-
-class Program():
+class Program:
 
     def __init__(self, name, instructions):
         self._name = name
@@ -47,7 +47,7 @@ class Program():
 
 
 ## emulates an Input/Output device controller (driver)
-class IoDeviceController():
+class IoDeviceController:
 
     def __init__(self, device):
         self._device = device
@@ -86,88 +86,8 @@ class IoDeviceController():
             deviceID=self._device.deviceId, currentPCB=self._currentPCB, waiting_queue=self._waiting_queue)
 
 
-## emulates the  Interruptions Handlers
-class AbstractInterruptionHandler():
-    def __init__(self, kernel):
-        self._kernel = kernel
-
-    @property
-    def kernel(self):
-        return self._kernel
-
-    def execute(self, irq):
-        log.logger.error("-- EXECUTE MUST BE OVERRIDEN in class {classname}".format(classname=self.__class__.__name__))
-
-    # Los nombres te los debo
-    def check_next_if_exist(self):
-        if not self.kernel.ready_queue.isEmpty():
-            next_pcb = self.kernel.ready_queue.next()
-            next_pcb.status = RUNNING_STATUS
-            self.kernel.pcb_table.running_pcb = next_pcb
-            DISPATCHER.load(next_pcb)
-
-    def run_or_add_to_ready_queue(self, a_pcb):
-        if self.kernel.pcb_table.running_pcb is None:
-            a_pcb.status = RUNNING_STATUS
-            self.kernel.pcb_table.running_pcb = a_pcb
-            DISPATCHER.load(a_pcb)
-        else:
-            a_pcb.status = READY_STATUS
-            self.kernel.ready_queue.add(a_pcb)
-
-
-class NewInterruptionHandler(AbstractInterruptionHandler):
-
-    def execute(self, irq):
-        program = irq.parameters
-        pid = self.kernel.pcb_table.ask_pid()
-        base_dir = LOADER.load(program)
-
-        new_pcb = PCB(pid, base_dir, program.name)
-        self.kernel.pcb_table.add(new_pcb)
-
-        self.run_or_add_to_ready_queue(new_pcb)
-
-
-class KillInterruptionHandler(AbstractInterruptionHandler):
-
-    def execute(self, irq):
-        log.logger.info(" Program Finished ")
-
-        pcb_to_kill = self.kernel.pcb_table.running_pcb
-        pcb_to_kill.status = FINISHED_STATUS
-        self.kernel.pcb_table.running_pcb = None
-        DISPATCHER.save(pcb_to_kill)
-
-        self.check_next_if_exist()
-
-
-class IoInInterruptionHandler(AbstractInterruptionHandler):
-
-    def execute(self, irq):
-        operation = irq.parameters
-        io_in_pcb = self.kernel.pcb_table.running_pcb
-        self.kernel.pcb_table.running_pcb = None
-        DISPATCHER.save(io_in_pcb)
-        io_in_pcb.status = WAITING_STATUS
-
-        self.kernel.ioDeviceController.runOperation(io_in_pcb, operation)
-        log.logger.info(self.kernel.ioDeviceController)
-
-        self.check_next_if_exist()
-
-
-class IoOutInterruptionHandler(AbstractInterruptionHandler):
-
-    def execute(self, irq):
-        io_out_pcb = self.kernel.ioDeviceController.getFinishedPCB()
-        log.logger.info(self.kernel.ioDeviceController)
-
-        self.run_or_add_to_ready_queue(io_out_pcb)
-
-
 # emulates the core of an Operative System
-class Kernel():
+class Kernel:
 
     def __init__(self):
         ## setup interruption handlers
@@ -215,113 +135,7 @@ def __repr__(self):
     return "Kernel "
 
 
-class Loader():
-
-    def __init__(self):
-        self._free_cell = 0
-
-    @property
-    def free_cell(self):
-        return self._free_cell
-
-    def load(self, program):
-        base_dir = self.free_cell
-        for inst in program.instructions:
-            HARDWARE.memory.write(self.free_cell, inst)
-            self._free_cell += 1
-        return base_dir
-
-
-NEW_STATUS = 'new'
-READY_STATUS = 'ready'
-RUNNING_STATUS = 'running'
-WAITING_STATUS = 'waiting'
-FINISHED_STATUS = 'finished'
-
-
-class PCB():
-
-    def __init__(self, pid, base_dir, path):
-        self._base_dir = base_dir
-        self._pid = pid
-        self._status = NEW_STATUS
-        self._pc = 0
-        self._path = path
-
-    @property
-    def pc(self):
-        return self._pc
-
-    @pc.setter
-    def pc(self, value):
-        self._pc = value
-
-    @property
-    def base_dir(self):
-        return self._base_dir
-
-    @base_dir.setter
-    def base_dir(self, new_base_dir):
-        self._base_dir = new_base_dir
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, new_status):
-        self._status = new_status
-
-    @property
-    def pid(self):
-        return self._pid
-
-    def __repr__(self):
-        return self._path
-
-class PCBTable():
-
-    def __init__(self):
-        self._running_pcb = None
-        self._table = []
-        self._pid = 0
-
-    def add(self, a_pcb):
-        self._table.append(a_pcb)
-
-    @property
-    def running_pcb(self):
-        return self._running_pcb
-
-    @running_pcb.setter
-    def running_pcb(self, new_running_pcb):
-        self._running_pcb = new_running_pcb
-
-    @property
-    def pid(self):
-        return self._pid
-
-    def ask_pid(self):
-        pid_to_provide = self.pid
-        self._pid += 1
-        return pid_to_provide
-
-
-class Dispatcher():
-
-    def __init__(self):
-        pass
-
-    def load(self, a_pcb):
-        HARDWARE.mmu.baseDir = a_pcb.base_dir
-        HARDWARE.cpu.pc = a_pcb.pc
-
-    def save(self, a_pcb):
-        a_pcb.pc = HARDWARE.cpu.pc
-        HARDWARE.cpu.pc = -1
-
-
-class ReadyQueue():
+class ReadyQueue:
     def __init__(self):
         self._queue = []
 
@@ -333,10 +147,5 @@ class ReadyQueue():
     def add(self, pcb):
         self._queue.append(pcb)
 
-    # No se que tan necesario es esto
     def isEmpty(self):
         return len(self._queue) == 0
-
-
-LOADER = Loader()
-DISPATCHER = Dispatcher()

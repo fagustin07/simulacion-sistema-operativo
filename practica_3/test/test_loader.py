@@ -1,7 +1,8 @@
 import unittest
 
 from src.hardware import ASM, HARDWARE
-from src.so import Program, Loader
+from src.so import Program
+from src.so_files.memory_drivers import Loader
 
 
 class LoaderTest(unittest.TestCase):
