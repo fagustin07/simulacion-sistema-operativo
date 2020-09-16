@@ -123,6 +123,23 @@ class Kernel:
     def pcb_table(self):
         return self._pcb_table
 
+    def run_next_if_exist(self):
+        if not self._ready_queue.isEmpty():
+            next_pcb = self._ready_queue.next()
+            next_pcb.status = RUNNING_STATUS
+            self._pcb_table.running_pcb = next_pcb
+            DISPATCHER.load(next_pcb)
+
+    def run_or_add_to_ready_queue(self, a_pcb):
+        if self._pcb_table.running_pcb is None:
+            a_pcb.status = RUNNING_STATUS
+            self._pcb_table.running_pcb = a_pcb
+            DISPATCHER.load(a_pcb)
+        else:
+            a_pcb.status = READY_STATUS
+            self._ready_queue.add(a_pcb)
+
+
     ## emulates a "system call" for programs execution
     def run(self, program):
         newIRQ = IRQ(NEW_INTERRUPTION_TYPE, program)
