@@ -2,88 +2,9 @@
 
 from src.hardware import *
 from src.hardware import HARDWARE
-from src.so_files.interruptions_handlers import *
-from src.so_files.pcb_managment import PCBTable
-
-
-## emulates a compiled program
-class Program:
-
-    def __init__(self, name, instructions):
-        self._name = name
-        self._instructions = self.expand(instructions)
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def instructions(self):
-        return self._instructions
-
-    def addInstr(self, instruction):
-        self._instructions.append(instruction)
-
-    def expand(self, instructions):
-        expanded = []
-        for i in instructions:
-            if isinstance(i, list):
-                ## is a list of instructions
-                expanded.extend(i)
-            else:
-                ## a single instr (a String)
-                expanded.append(i)
-
-        ## now test if last instruction is EXIT
-        ## if not... add an EXIT as final instruction
-        last = expanded[-1]
-        if not ASM.isEXIT(last):
-            expanded.append(INSTRUCTION_EXIT)
-
-        return expanded
-
-    def __repr__(self):
-        return "Program({name}, {instructions})".format(name=self._name, instructions=self._instructions)
-
-
-## emulates an Input/Output device controller (driver)
-class IoDeviceController:
-
-    def __init__(self, device):
-        self._device = device
-        self._waiting_queue = []
-        self._currentPCB = None
-
-    @property
-    def currentPCB(self):
-        return self._currentPCB
-
-    def runOperation(self, pcb, instruction):
-        pair = {'pcb': pcb, 'instruction': instruction}
-        # append: adds the element at the end of the queue
-        self._waiting_queue.append(pair)
-        # try to send the instruction to hardware's device (if is idle)
-        self.__load_from_waiting_queue_if_apply()
-
-    def getFinishedPCB(self):
-        finishedPCB = self._currentPCB
-        self._currentPCB = None
-        self.__load_from_waiting_queue_if_apply()
-        return finishedPCB
-
-    def __load_from_waiting_queue_if_apply(self):
-        if (len(self._waiting_queue) > 0) and self._device.is_idle:
-            ## pop(): extracts (deletes and return) the first element in queue
-            pair = self._waiting_queue.pop(0)
-            # print(pair)
-            pcb = pair['pcb']
-            instruction = pair['instruction']
-            self._currentPCB = pcb
-            self._device.execute(instruction)
-
-    def __repr__(self):
-        return "IoDeviceController for {deviceID} running: {currentPCB} waiting: {waiting_queue}".format(
-            deviceID=self._device.deviceId, currentPCB=self._currentPCB, waiting_queue=self._waiting_queue)
+from src.so_components.interruptions_handlers import *
+from src.so_components.io_device_controller import IoDeviceController
+from src.so_components.pcb_managment import PCBTable
 
 
 # emulates the core of an Operative System
@@ -111,18 +32,6 @@ class Kernel:
         self._pcb_table = PCBTable()
         self._ready_queue = ReadyQueue()
 
-    @property
-    def ready_queue(self):
-        return self._ready_queue
-
-    @property
-    def ioDeviceController(self):
-        return self._ioDeviceController
-
-    @property
-    def pcb_table(self):
-        return self._pcb_table
-
     def run_next_if_exist(self):
         if not self._ready_queue.isEmpty():
             next_pcb = self._ready_queue.next()
@@ -139,17 +48,27 @@ class Kernel:
             a_pcb.status = READY_STATUS
             self._ready_queue.add(a_pcb)
 
-
     ## emulates a "system call" for programs execution
-    def run(self, program):
-        newIRQ = IRQ(NEW_INTERRUPTION_TYPE, program)
+    def run(self, path):
+        newIRQ = IRQ(NEW_INTERRUPTION_TYPE, path)
         HARDWARE.interruptVector.handle(newIRQ)
-        log.logger.info("\n Executing program: {name}".format(name=program.name))
+        log.logger.info("\n Executing program: {name}".format(name=path))
         log.logger.info(HARDWARE)
 
+    @property
+    def ready_queue(self):
+        return self._ready_queue
 
-def __repr__(self):
-    return "Kernel "
+    @property
+    def ioDeviceController(self):
+        return self._ioDeviceController
+
+    @property
+    def pcb_table(self):
+        return self._pcb_table
+
+    def __repr__(self):
+        return "Kernel "
 
 
 class ReadyQueue:

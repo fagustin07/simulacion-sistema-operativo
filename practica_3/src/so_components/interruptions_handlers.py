@@ -1,6 +1,6 @@
 from src import log
-from src.so_files.memory_drivers import LOADER, DISPATCHER
-from src.so_files.pcb_managment import READY_STATUS, RUNNING_STATUS, WAITING_STATUS, FINISHED_STATUS, PCB
+from src.so_components.memory_drivers import LOADER, DISPATCHER
+from src.so_components.pcb_managment import READY_STATUS, RUNNING_STATUS, WAITING_STATUS, FINISHED_STATUS, PCB
 
 
 ## emulates the  Interruptions Handlers
@@ -19,11 +19,11 @@ class AbstractInterruptionHandler:
 class NewInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
-        program = irq.parameters
+        path = irq.parameters
         pid = self.kernel.pcb_table.ask_pid()
-        base_dir = LOADER.load(program)
+        base_dir = LOADER.load(path)
 
-        new_pcb = PCB(pid, base_dir, program.name)
+        new_pcb = PCB(pid, base_dir, path)
         self.kernel.pcb_table.add(new_pcb)
 
         self.kernel.run_or_add_to_ready_queue(new_pcb)

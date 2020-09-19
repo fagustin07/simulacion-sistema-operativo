@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from src.so_components.disk import Disk
 from src.tabulate import tabulate
 from time import sleep
 from threading import Thread, Lock
@@ -279,6 +279,7 @@ class Hardware():
         self._ioDevice = PrinterIODevice()
         self._mmu = MMU(self._memory)
         self._cpu = Cpu(self._mmu, self._interruptVector)
+        self._disk = Disk()
         self._clock.addSubscriber(self._ioDevice)
         self._clock.addSubscriber(self._cpu)
 
@@ -289,6 +290,10 @@ class Hardware():
     def switchOff(self):
         self.clock.stop()
         log.logger.info(" ---- SWITCH OFF ---- ")
+
+    @property
+    def disk(self):
+        return self._disk
 
     @property
     def cpu(self):

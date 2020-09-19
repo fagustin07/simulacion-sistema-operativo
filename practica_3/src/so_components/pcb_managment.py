@@ -43,7 +43,7 @@ class PCB:
         return self._pid
 
     def __repr__(self):
-        return self._path
+        return "PID: {pid} -> PATH: {name}".format(pid=self.pid, name=self._path)
 
 
 class PCBTable:
@@ -59,6 +59,10 @@ class PCBTable:
     @property
     def running_pcb(self):
         return self._running_pcb
+
+    @property
+    def table(self):
+        return self._table
 
     @running_pcb.setter
     def running_pcb(self, new_running_pcb):

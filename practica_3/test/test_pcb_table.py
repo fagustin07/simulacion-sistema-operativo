@@ -1,6 +1,6 @@
 import unittest
 
-from src.so_files.pcb_managment import PCBTable, PCB
+from src.so_components.pcb_managment import PCBTable, PCB
 
 
 class PCBTableTest(unittest.TestCase):

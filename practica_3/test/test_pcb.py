@@ -1,6 +1,6 @@
 import unittest
 
-from src.so_files.pcb_managment import PCB, NEW_STATUS
+from src.so_components.pcb_managment import PCB, NEW_STATUS
 
 
 class PCBTest(unittest.TestCase):
