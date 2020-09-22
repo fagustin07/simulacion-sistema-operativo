@@ -7,3 +7,8 @@ grupo_4
 |  Nicolas Martínez              |martinez.nicolas0510@gmail.com  | nicolasmartinez                      |
 |  Federico Sandoval             |fede.sandoval99@gmail.com       |f.sandoval                      |
 
+### Practica1:
+Ok
+
+### Practica2:
+Excelente
