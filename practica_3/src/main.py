@@ -42,10 +42,9 @@ if __name__ == '__main__':
     # "booteamos" el sistema operativo
     kernel = Kernel()
 
-    ##  create a program
     setUpDisk()
 
-    # execute the program
+    # execute programs
     kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe')
     kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe')
     kernel.run('C:/Users/ATRR/Download/vlc-setup.msi')
