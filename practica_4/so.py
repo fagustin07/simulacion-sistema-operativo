@@ -1,1 +1,0 @@
-### Reemplazarlo con el so.py de la practica anterior
