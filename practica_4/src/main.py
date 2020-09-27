@@ -1,11 +1,33 @@
-from hardware import *
-from so import *
-import log
-
+from src import log
+from src.hardware import HARDWARE, ASM
 
 ##
 ##  MAIN 
 ##
+from src.so import Kernel
+
+
+def setUpDisk():
+    instructions_1 = ASM.CPU(2)
+    instructions_1.append(ASM.IO())
+    instructions_1.extend(ASM.CPU(2))
+    instructions_1.append(ASM.IO())
+    instructions_1.extend(ASM.CPU(3))
+    instructions_1.extend(ASM.EXIT(1))
+
+    instructions_2 = ASM.CPU(4)
+    instructions_2.append(ASM.IO())
+    instructions_2.extend(ASM.EXIT(1))
+
+    instructions_3 = [ASM.IO()]
+    instructions_3.extend(ASM.CPU(2))
+    instructions_3.extend(ASM.EXIT(1))
+
+    HARDWARE.disk.save('C:/Program Files(x86)/pyCharm/pyCharm.exe', instructions_1)
+    HARDWARE.disk.save('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', instructions_2)
+    HARDWARE.disk.save('C:/Users/ATRR/Download/vlc-setup.msi', instructions_3)
+
+
 if __name__ == '__main__':
     log.setupLogger()
     log.logger.info('Starting emulator')
@@ -20,17 +42,9 @@ if __name__ == '__main__':
     # "booteamos" el sistema operativo
     kernel = Kernel()
 
-    # Ahora vamos a intentar ejecutar 3 programas a la vez
-    ##################
-    prg1 = Program("prg1.exe", [ASM.CPU(2), ASM.IO(), ASM.CPU(3), ASM.IO(), ASM.CPU(2)])
-    prg2 = Program("prg2.exe", [ASM.CPU(7)])
-    prg3 = Program("prg3.exe", [ASM.CPU(4), ASM.IO(), ASM.CPU(1)])
+    setUpDisk()
 
-    # execute all programs "concurrently"
-    kernel.run(prg1)
-    kernel.run(prg2)
-    kernel.run(prg3)
-
-
-
-
+    # execute programs
+    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe')
+    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe')
+    kernel.run('C:/Users/ATRR/Download/vlc-setup.msi')

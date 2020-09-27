@@ -7,12 +7,18 @@ FINISHED_STATUS = 'FINISHED'
 
 class PCB:
 
-    def __init__(self, pid, base_dir, path):
+    def __init__(self, pid, base_dir, path, priority):
         self._base_dir = base_dir
         self._pid = pid
         self._status = NEW_STATUS
         self._pc = 0
         self._path = path
+        self._priority = priority
+
+
+    @property
+    def priority(self):
+        return self._priority
 
     @property
     def pc(self):

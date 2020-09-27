@@ -19,11 +19,12 @@ class AbstractInterruptionHandler:
 class NewInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
-        path = irq.parameters
+        path = irq.parameters[0]
         pid = self.kernel.pcb_table.ask_pid()
         base_dir = LOADER.load(path)
+        priority = irq.parameters[1]
 
-        new_pcb = PCB(pid, base_dir, path)
+        new_pcb = PCB(pid, base_dir, path, priority)
         self.kernel.pcb_table.add(new_pcb)
 
         self.kernel.run_or_add_to_ready_queue(new_pcb)

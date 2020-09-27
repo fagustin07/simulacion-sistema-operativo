@@ -5,6 +5,7 @@ from src.hardware import HARDWARE
 from src.so_components.interruptions_handlers import *
 from src.so_components.io_device_controller import IoDeviceController
 from src.so_components.pcb_managment import PCBTable
+from src.so_components.Schedule import *
 
 
 # emulates the core of an Operative System
@@ -30,11 +31,11 @@ class Kernel:
 
         # Service
         self._pcb_table = PCBTable()
-        self._ready_queue = ReadyQueue()
+        self.shedule = ScheduleFCFS()
 
     def run_next_if_exist(self):
-        if not self._ready_queue.isEmpty():
-            next_pcb = self._ready_queue.next()
+        if not self.shedule.existNext():
+            next_pcb = self.shedule.getNext()
             next_pcb.status = RUNNING_STATUS
             self._pcb_table.running_pcb = next_pcb
             DISPATCHER.load(next_pcb)
@@ -45,22 +46,33 @@ class Kernel:
             self._pcb_table.running_pcb = a_pcb
             DISPATCHER.load(a_pcb)
         else:
+            self.expropiate_or_add_to_ready_queue(a_pcb)
+
+    def expropiate_or_add_to_ready_queue(self, a_pcb):
+        if self.shedule.mustExpropiate(self._pcb_table.running_pcb, a_pcb):
+            pcb_expropiated = self._pcb_table.running_pcb
+            pcb_expropiated.status = READY_STATUS
+            a_pcb.status = RUNNING_STATUS
+            self._pcb_table.running_pcb = a_pcb
+            self.shedule.add(pcb_expropiated)
+            DISPATCHER.save(pcb_expropiated)
+        else:
             a_pcb.status = READY_STATUS
-            self._ready_queue.add(a_pcb)
+            self.shedule.add(a_pcb)
 
     ## emulates a "system call" for programs execution
-    def run(self, path):
-        newIRQ = IRQ(NEW_INTERRUPTION_TYPE, path)
+    def run(self, path, priority = 1):
+        newIRQ = IRQ(NEW_INTERRUPTION_TYPE, [path, priority])
         HARDWARE.interruptVector.handle(newIRQ)
         log.logger.info("\n Executing program: {name}".format(name=path))
         log.logger.info(HARDWARE)
 
     @property
     def ready_queue(self):
-        return self._ready_queue
+        return self.shedule
 
     @property
-    def ioDeviceController(self):
+    def io_device_controller(self):
         return self._ioDeviceController
 
     @property
@@ -69,19 +81,3 @@ class Kernel:
 
     def __repr__(self):
         return "Kernel "
-
-
-class ReadyQueue:
-    def __init__(self):
-        self._queue = []
-
-    def next(self):
-        next_pcb = self._queue[0]
-        self._queue.pop(0)
-        return next_pcb
-
-    def add(self, pcb):
-        self._queue.append(pcb)
-
-    def isEmpty(self):
-        return len(self._queue) == 0
