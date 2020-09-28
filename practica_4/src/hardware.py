@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-from src import tabulate
+from src import tabulate, log
 from time import sleep
 from threading import Thread, Lock
 import src.log
 
 ##  Estas son la instrucciones soportadas por nuestro CPU
+from src.so_components.disk import Disk
+
 INSTRUCTION_IO = 'IO'
 INSTRUCTION_CPU = 'CPU'
 INSTRUCTION_EXIT = 'EXIT'
@@ -146,8 +148,8 @@ class Memory():
         return self._size
 
     def __repr__(self):
-        return tabulate(enumerate(self._cells), tablefmt='psql')
-        ##return "Memoria = {mem}".format(mem=self._cells)
+        # return tabulate(enumerate(self._cells), tablefmt='psql')
+        return "Memoria = {mem}".format(mem=self._cells)
 
 ## emulates the Memory Management Unit (MMU)
 class MMU():
@@ -339,6 +341,7 @@ class Hardware():
         self._timer = Timer(self._cpu, self._interruptVector)
         self._clock.addSubscriber(self._ioDevice)
         self._clock.addSubscriber(self._timer)
+        self._disk = Disk()
 
     def switchOn(self):
         log.logger.info(" ---- SWITCH ON ---- ")
@@ -375,6 +378,10 @@ class Hardware():
     @property
     def timer(self):
         return self._timer
+
+    @property
+    def disk(self):
+        return self._disk
 
     def __repr__(self):
         return "HARDWARE state {cpu}\n{mem}".format(cpu=self._cpu, mem=self._memory)
