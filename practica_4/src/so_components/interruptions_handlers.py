@@ -21,10 +21,12 @@ class NewInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         path = irq.parameters[0]
         pid = self.kernel.pcb_table.ask_pid()
-        base_dir = LOADER.load(path)
+        dirs = LOADER.load(path)
+        base_dir = dirs[0]
+        limit = dirs[1]
         priority = irq.parameters[1]
 
-        new_pcb = PCB(pid, base_dir, path, priority)
+        new_pcb = PCB(pid, base_dir, limit, path, priority)
         self.kernel.pcb_table.add(new_pcb)
 
         self.kernel.run_or_add_to_ready_queue(new_pcb)
@@ -35,9 +37,9 @@ class KillInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         log.logger.info(" Program Finished ")
 
-        pcb_to_kill = self.kernel.pcb_table.running_pcb
+        pcb_to_kill = self.kernel.scheduler.running_pcb
         pcb_to_kill.status = FINISHED_STATUS
-        self.kernel.pcb_table.running_pcb = None
+        self.kernel.scheduler.running_pcb = None
         DISPATCHER.save(pcb_to_kill)
 
         self.kernel.run_next_if_exist()
@@ -47,13 +49,13 @@ class IoInInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         operation = irq.parameters
-        io_in_pcb = self.kernel.pcb_table.running_pcb
-        self.kernel.pcb_table.running_pcb = None
+        io_in_pcb = self.kernel.scheduler.running_pcb
+        self.kernel.scheduler.running_pcb = None
         DISPATCHER.save(io_in_pcb)
         io_in_pcb.status = WAITING_STATUS
 
-        self.kernel.ioDeviceController.runOperation(io_in_pcb, operation)
-        log.logger.info(self.kernel.ioDeviceController)
+        self.kernel.io_device_controller.runOperation(io_in_pcb, operation)
+        log.logger.info(self.kernel.io_device_controller)
 
         self.kernel.run_next_if_exist()
 
@@ -61,7 +63,7 @@ class IoInInterruptionHandler(AbstractInterruptionHandler):
 class IoOutInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
-        io_out_pcb = self.kernel.ioDeviceController.getFinishedPCB()
-        log.logger.info(self.kernel.ioDeviceController)
+        io_out_pcb = self.kernel.io_device_controller.getFinishedPCB()
+        log.logger.info(self.kernel.io_device_controller)
 
         self.kernel.run_or_add_to_ready_queue(io_out_pcb)

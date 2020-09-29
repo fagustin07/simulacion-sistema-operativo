@@ -19,7 +19,6 @@ class LoaderTest(unittest.TestCase):
         prg.extend(ASM.EXIT(1))
 
         HARDWARE.disk.save('test.exe', prg)
-
         self.loader.load('test.exe')
 
         self.assertEqual(self.loader.free_cell, 4)

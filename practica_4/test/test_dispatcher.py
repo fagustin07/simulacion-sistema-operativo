@@ -17,10 +17,11 @@ class DispatcherTest(unittest.TestCase):
 
         HARDWARE.disk.save('test.exe', prg)
         loader._free_cell = 8
-        base_dir = loader.load('test.exe')
+        result = loader.load('test.exe')
+        base_dir = result[0]
 
         self.dispatcher = Dispatcher()
-        self.pcb = PCB(1, base_dir, 'program.exe')
+        self.pcb = PCB(1, base_dir, 5, 'program.exe', 1)
 
     def test_dispatcher_load_pcb(self):
 

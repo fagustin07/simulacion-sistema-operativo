@@ -5,6 +5,7 @@ from src.hardware import HARDWARE, ASM
 ##  MAIN 
 ##
 from src.so import Kernel
+from src.so_components.scheduling import FCFSScheduling, PriorityScheduling
 
 
 def setUpDisk():
@@ -40,11 +41,17 @@ if __name__ == '__main__':
 
     ## new create the Operative System Kernel
     # "booteamos" el sistema operativo
+    schedulerFCFS = FCFSScheduling()
+    schedulerPriorityExpropiative = PriorityScheduling(must_expropiate=True)
+    schedulerPriorityNoExpropiative = PriorityScheduling(must_expropiate=False)
+
+
     kernel = Kernel()
+    kernel.scheduler = schedulerPriorityNoExpropiative
 
     setUpDisk()
 
     # execute programs
-    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe')
-    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe')
-    kernel.run('C:/Users/ATRR/Download/vlc-setup.msi')
+    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 2)
+    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 6)
+    kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 1)

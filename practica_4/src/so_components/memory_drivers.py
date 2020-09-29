@@ -16,7 +16,9 @@ class Loader:
         for inst in program:
             HARDWARE.memory.write(self.free_cell, inst)
             self._free_cell += 1
-        return base_dir
+        limit_dir = self.free_cell - 1
+
+        return [base_dir, limit_dir]
 
 
 class Dispatcher:
@@ -26,10 +28,12 @@ class Dispatcher:
 
     def load(self, a_pcb):
         HARDWARE.mmu.baseDir = a_pcb.base_dir
+        HARDWARE.mmu.limit = a_pcb.limit
         HARDWARE.cpu.pc = a_pcb.pc
 
     def save(self, a_pcb):
         a_pcb.pc = HARDWARE.cpu.pc
+        HARDWARE.mmu.limit = -1
         HARDWARE.cpu.pc = -1
 
 
