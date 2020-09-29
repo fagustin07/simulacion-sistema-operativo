@@ -36,7 +36,7 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
 
 - __2:__ Entender las clases __IoDeviceController__, __PrinterIODevice__ y poder explicar como funcionan
 
-<em>El IODeviceController es el encargado de ejecutar las instrucciones IO que se le encarguen. Cuenta con una lista waiting, en donde iran a parar las instrucciones que esten esperando un lugar en el IO device.</em>
+<em>El IODeviceController es el encargado de ejecutar las instrucciones IO que se le encarguen. Cuenta con una lista waiting, en donde iran a parar las instrucciones que esten esperando un lugar en el IO device. El PrinterIODevice simula ser un device que retiene al pcb cuya ejecucion de IO retiene al PCB que entra en él por 3 ticks de Clock.</em>
 
 - __3:__ Explicar cómo se llegan a ejecutar __IoInInterruptionHandler.execute()__ y  __IoOutInterruptionHandler.execute()__
 
@@ -59,7 +59,7 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
     prg3 = Program("prg3.exe", [ASM.CPU(3)])
     ```
 
-<em>Si la ejecucion de una operación IO tardara 3 ticks, y considerando que cada operación CPU tarda 1 tick, ademas del tick de reloj que se pierde por mandar a ejecutar cada operación IO, se tardarian 27 ticks en ejecutar el batch dado. Para mejorar ese tiempo, se podria ejecutar concurrentemente una instrucción de CPU de otro programa mientras el IO device estuviera ejecutando una instrucción IO, asi la CPU siempre estaria activa y se reducirian considerablemente la cantidad de ticks para ejecutar el batch. </em>
+<em>Si la ejecucion de una operación IO tardara 3 ticks, y considerando que cada operación CPU tarda 1 tick, ademas del tick de reloj que se pierde por mandar a ejecutar cada operación IO, se tardarian 30 ticks en ejecutar el batch dado. Para mejorar ese tiempo, se podria ejecutar concurrentemente una instrucción de CPU de otro programa mientras el IO device estuviera ejecutando una instrucción IO, asi la CPU siempre estaria activa y se reducirian considerablemente la cantidad de ticks para ejecutar el batch. </em>
 
 
 - __5:__ Hay que tener en cuenta que los procesos se van a intentar ejecutar todos juntos ("concurrencia"), pero como solo tenemos un solo CPU, vamos a tener que administrar su uso de forma óptima.
