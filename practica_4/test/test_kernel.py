@@ -44,7 +44,7 @@ class KernelTest(unittest.TestCase):
         self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 2)
 
         HARDWARE.clock.do_ticks(5)
-
+        hw = HARDWARE
         self.assertEqual(FINISHED_STATUS, self.kernel.pcb_table.table[0].status)
 
 

@@ -45,10 +45,11 @@ NEW_INTERRUPTION_TYPE = "#NEW"
 TIMEOUT_INTERRUPTION_TYPE = "#TIMEOUT"
 STAT_INTERRUPTION_TYPE = "#STAT"
 
+
 ## emulates an Interrupt request
 class IRQ:
 
-    def __init__(self, type, parameters = None):
+    def __init__(self, type, parameters=None):
         self._type = type
         self._parameters = parameters
 
@@ -72,13 +73,14 @@ class InterruptVector():
         self._handlers[interruptionType] = interruptionHandler
 
     def handle(self, irq):
-        log.logger.info("Handling {type} irq with parameters = {parameters}".format(type=irq.type, parameters=irq.parameters ))
+        log.logger.info(
+            "Handling {type} irq with parameters = {parameters}".format(type=irq.type, parameters=irq.parameters))
         self.lock.acquire()
         try:
             irqHandler = self._handlers[irq.type]
         except:
-           irqHandler = None
-           log.logger.info("No Handler found for irq type: {type}".format(type=irq.type ))
+            irqHandler = None
+            log.logger.info("No Handler found for irq type: {type}".format(type=irq.type))
 
         if not (irqHandler is None):
             irqHandler.execute(irq)
@@ -114,7 +116,7 @@ class Clock():
 
     def tick(self, tickNbr):
         self._currentTick = tickNbr
-        log.logger.info("        --------------- tick: {tickNbr} ---------------".format(tickNbr = tickNbr))
+        log.logger.info("        --------------- tick: {tickNbr} ---------------".format(tickNbr=tickNbr))
         ## notify all subscriber that a new clock cycle has started
         for subscriber in self._subscribers:
             subscriber.tick(tickNbr)
@@ -129,6 +131,7 @@ class Clock():
     @property
     def currentTick(self):
         return self._currentTick
+
 
 ## emulates the main memory (RAM)
 class Memory():
@@ -150,6 +153,7 @@ class Memory():
     def __repr__(self):
         # return tabulate(enumerate(self._cells), tablefmt='psql')
         return "Memoria = {mem}".format(mem=self._cells)
+
 
 ## emulates the Memory Management Unit (MMU)
 class MMU():
@@ -175,9 +179,11 @@ class MMU():
     def baseDir(self, baseDir):
         self._baseDir = baseDir
 
-    def fetch(self,  logicalAddress):
+    def fetch(self, logicalAddress):
         if (logicalAddress > self._limit):
-            raise Exception("Invalid Address,  {logicalAddress} is higher than process limit: {limit}".format(limit = self._limit, logicalAddress = logicalAddress))
+            raise Exception(
+                "Invalid Address,  {logicalAddress} is higher than process limit: {limit}".format(limit=self._limit,
+                                                                                                  logicalAddress=logicalAddress))
 
         physicalAddress = logicalAddress + self._baseDir
         return self._memory.read(physicalAddress)
@@ -192,7 +198,6 @@ class Cpu():
         self._pc = -1
         self._ir = None
         self._enable_stats = False
-    
 
     def tick(self, tickNbr):
         self._stats()
@@ -248,6 +253,7 @@ class Cpu():
     def __repr__(self):
         return "CPU(PC={pc})".format(pc=self._pc)
 
+
 ## emulates an Input/output device of the Hardware
 class AbstractIODevice():
 
@@ -271,7 +277,8 @@ class AbstractIODevice():
     ## executes an I/O instruction
     def execute(self, operation):
         if (self._busy):
-            raise Exception("Device {id} is busy, can't  execute operation: {op}".format(id = self.deviceId, op = operation))
+            raise Exception(
+                "Device {id} is busy, can't  execute operation: {op}".format(id=self.deviceId, op=operation))
         else:
             self._busy = True
             self._ticksCount = 0
@@ -286,7 +293,9 @@ class AbstractIODevice():
                 ioOutIRQ = IRQ(IO_OUT_INTERRUPTION_TYPE, self._deviceId)
                 HARDWARE.interruptVector.handle(ioOutIRQ)
             else:
-                log.logger.info("device {deviceId} - Busy: {ticksCount} of {deviceTime}".format(deviceId = self.deviceId, ticksCount = self._ticksCount, deviceTime = self._deviceTime))
+                log.logger.info("device {deviceId} - Busy: {ticksCount} of {deviceTime}".format(deviceId=self.deviceId,
+                                                                                                ticksCount=self._ticksCount,
+                                                                                                deviceTime=self._deviceTime))
 
 
 class PrinterIODevice(AbstractIODevice):
@@ -299,9 +308,9 @@ class Timer:
     def __init__(self, cpu, interruptVector):
         self._cpu = cpu
         self._interruptVector = interruptVector
-        self._tickCount = 0    # cantidad de de ciclos “ejecutados” por el proceso actual
-        self._active = False    # por default esta desactivado
-        self._quantum = 0   # por default esta desactivado
+        self._tickCount = 0  # cantidad de de ciclos “ejecutados” por el proceso actual
+        self._active = False  # por default esta desactivado
+        self._quantum = 0  # por default esta desactivado
 
     def tick(self, tickNbr):
         # registro que el proceso en CPU corrio un ciclo mas 
@@ -311,10 +320,10 @@ class Timer:
             timeoutIRQ = IRQ(TIMEOUT_INTERRUPTION_TYPE)
             self._interruptVector.handle(timeoutIRQ)
         else:
-            self._cpu.tick(tickNbr) 
+            self._cpu.tick(tickNbr)
 
     def reset(self):
-           self._tickCount = 0
+        self._tickCount = 0
 
     @property
     def quantum(self):
@@ -386,7 +395,7 @@ class Hardware():
     def __repr__(self):
         return "HARDWARE state {cpu}\n{mem}".format(cpu=self._cpu, mem=self._memory)
 
+
 ### HARDWARE is a global variable
 ### can be access from any
 HARDWARE = Hardware()
-

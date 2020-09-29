@@ -45,6 +45,7 @@ if __name__ == '__main__':
     schedulerPriority = PriorityScheduling()
 
     kernel = Kernel()
+    kernel.scheduler = schedulerPriority
 
     setUpDisk()
 

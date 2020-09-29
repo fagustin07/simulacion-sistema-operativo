@@ -37,7 +37,7 @@ class Kernel:
         self.scheduler.run_next_if_exist()
 
     def run_or_add_to_ready_queue(self, a_pcb):
-        self.scheduler.add(a_pcb)
+        self.scheduler.run_or_add_to_ready_queue(a_pcb)
 
     ## emulates a "system call" for programs execution
     def run(self, path, priority):
@@ -45,10 +45,6 @@ class Kernel:
         HARDWARE.interruptVector.handle(newIRQ)
         log.logger.info("\n Executing program: {name}".format(name=path))
         log.logger.info(HARDWARE)
-
-    @property
-    def ready_queue(self):
-        return self._scheduler
 
     @property
     def io_device_controller(self):

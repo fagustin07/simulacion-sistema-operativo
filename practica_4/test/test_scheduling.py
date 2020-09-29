@@ -18,15 +18,15 @@ class SchedulersTest(unittest.TestCase):
         self.assertTrue(self.schedulerFCFS.isEmpty())
 
     def test_scheduler_can_add_new_pcbs(self):
-        self.schedulerFCFS.add(self.new_pcb)
+        self.schedulerFCFS.run_or_add_to_ready_queue(self.new_pcb)
 
         self.assertEqual(self.new_pcb, self.schedulerFCFS.running_pcb)
 
     def test_a_pcb_with_high_priority_expropiate_cpu(self):
-        self.schedulerPriority.add(self.new_pcb)
+        self.schedulerPriority.run_or_add_to_ready_queue(self.new_pcb)
 
         high_priority_pcb = PCB(4, 77, 89, 'e.exe', 0)
-        self.schedulerPriority.add(high_priority_pcb)
+        self.schedulerPriority.run_or_add_to_ready_queue(high_priority_pcb)
 
         self.assertEqual(high_priority_pcb, self.schedulerPriority.running_pcb)
         self.assertEqual(RUNNING_STATUS, high_priority_pcb.status)
