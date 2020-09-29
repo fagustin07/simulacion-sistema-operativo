@@ -42,14 +42,16 @@ if __name__ == '__main__':
     ## new create the Operative System Kernel
     # "booteamos" el sistema operativo
     schedulerFCFS = FCFSScheduling()
-    schedulerPriority = PriorityScheduling()
+    schedulerPriorityExpropiative = PriorityScheduling(must_expropiate=True)
+    schedulerPriorityNoExpropiative = PriorityScheduling(must_expropiate=False)
+
 
     kernel = Kernel()
-    kernel.scheduler = schedulerPriority
+    kernel.scheduler = schedulerPriorityNoExpropiative
 
     setUpDisk()
 
     # execute programs
-    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 0)
-    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 2)
+    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 2)
+    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 6)
     kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 1)

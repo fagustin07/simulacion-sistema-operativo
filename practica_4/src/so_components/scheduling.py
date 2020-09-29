@@ -8,7 +8,7 @@ class AbstractScheduling:
         self._running_pcb = None
 
     def run_next_if_exist(self):
-        if not self.isEmpty():
+        if not self.is_empty():
             self.run_pcb(self.next())
 
     def run_or_add_to_ready_queue(self, a_pcb):
@@ -37,7 +37,7 @@ class AbstractScheduling:
         self._queue.pop(0)
         return next_pcb
 
-    def isEmpty(self):
+    def is_empty(self):
         return len(self._queue) == 0
 
     @property
@@ -59,12 +59,16 @@ class FCFSScheduling(AbstractScheduling):
 
 class PriorityScheduling(AbstractScheduling):
 
+    def __init__(self, must_expropiate):
+        super().__init__()
+        self._expropiative = must_expropiate
+
     def add(self, pcb_to_add):
         self.check_if_expropiate(pcb_to_add)
         self.sort()
 
     def check_if_expropiate(self, pcb_to_add):
-        if pcb_to_add.priority < self.running_pcb.priority:
+        if self._expropiative and pcb_to_add.priority < self.running_pcb.priority:
             expropriated_pcb = self.running_pcb
             self.running_pcb = None
             DISPATCHER.save(expropriated_pcb)
