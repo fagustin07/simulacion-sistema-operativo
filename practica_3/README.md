@@ -36,7 +36,7 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
 
 - __2:__ Entender las clases __IoDeviceController__, __PrinterIODevice__ y poder explicar como funcionan
 
-<em>El IODeviceController es el encargado de ejecutar las instrucciones IO que se le encarguen. Cuenta con una lista waiting, en donde iran a parar las instrucciones que esten esperando un lugar en el IO device. El PrinterIODevice simula ser un device que retiene al pcb cuya ejecucion de IO retiene al PCB que entra en él por 3 ticks de Clock.</em>
+<em>El IODeviceController es el encargado de ejecutar las instrucciones IO que se le encarguen. Cuenta con una lista waiting, en donde iran a parar las instrucciones que esten esperando un lugar en el IO device. El PrinterIODevice simula ser un device cuya ejecucion de instruccion IO retiene al PCB que entra en él por 3 ticks de Clock.</em>
 
 - __3:__ Explicar cómo se llegan a ejecutar __IoInInterruptionHandler.execute()__ y  __IoOutInterruptionHandler.execute()__
 
