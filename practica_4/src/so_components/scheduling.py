@@ -1,3 +1,5 @@
+from heapq import heapify, heappop, heappush
+
 from src.so_components.memory_drivers import DISPATCHER
 from src.so_components.pcb_managment import READY_STATUS, RUNNING_STATUS
 
@@ -59,13 +61,13 @@ class FCFSScheduling(AbstractScheduling):
 
 class PriorityScheduling(AbstractScheduling):
 
-    def __init__(self, must_expropiate):
+    def __init__(self, must_expropriate):
         super().__init__()
-        self._expropiative = must_expropiate
+        self._expropiative = must_expropriate
+        heapify(self._queue)
 
     def add(self, pcb_to_add):
         self.check_if_expropiate(pcb_to_add)
-        self.sort()
 
     def check_if_expropiate(self, pcb_to_add):
         if self._expropiative and pcb_to_add.priority < self.running_pcb.priority:
@@ -78,5 +80,50 @@ class PriorityScheduling(AbstractScheduling):
         else:
             self.add_to_ready_queue(pcb_to_add)
 
-    def sort(self):
-        self._queue.sort(key=lambda pcb: pcb.priority)
+    def add_to_ready_queue(self, pcb):
+        pcb.status = READY_STATUS
+        pcb_in_ready_queue = PCBInReadyQueue(pcb)
+        heappush(self.readyQueue, pcb_in_ready_queue)
+
+    def next(self):
+        next_pcb = heappop(self.readyQueue).pcb
+        for pcb_in_rq in self.readyQueue:
+            pcb_in_rq.check_if_increment_priority()
+        heapify(self.readyQueue)
+        return next_pcb
+
+
+class PCBInReadyQueue:
+
+    def __init__(self, pcb):
+        self._pcb = pcb
+        self._temp_priority = pcb.priority
+        self._switch_context = 0
+
+    def check_if_increment_priority(self):
+        self.switch_context += 1
+        if self.switch_context % 3 == 0:
+            self.temp_priority = max(0, self.temp_priority - 3)
+
+    @property
+    def switch_context(self):
+        return self._switch_context
+
+    @property
+    def temp_priority(self):
+        return self._temp_priority
+
+    @property
+    def pcb(self):
+        return self._pcb
+
+    @temp_priority.setter
+    def temp_priority(self, value):
+        self._temp_priority = value
+
+    def __gt__(self, pcb_in_queue):
+        return self.temp_priority > pcb_in_queue.temp_priority
+
+    @switch_context.setter
+    def switch_context(self, value):
+        self._switch_context = value

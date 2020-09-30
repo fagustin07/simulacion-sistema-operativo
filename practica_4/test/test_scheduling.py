@@ -12,8 +12,8 @@ class SchedulersTest(unittest.TestCase):
         new_pid = PCBTable().ask_pid()
         self.new_pcb = PCB(new_pid, 0, 76, 'tests.exe', 6)
         self.schedulerFCFS = FCFSScheduling()
-        self.schedulerPriorityExpropiative = PriorityScheduling(must_expropiate=True)
-        self.schedulerPriorityNoExpropiative = PriorityScheduling(must_expropiate=False)
+        self.schedulerPriorityExpropiative = PriorityScheduling(must_expropriate=True)
+        self.schedulerPriorityNoExpropiative = PriorityScheduling(must_expropriate=False)
 
     def test_a_scheduler_start_empty(self):
         self.assertTrue(self.schedulerFCFS.is_empty())

@@ -1,5 +1,5 @@
 from src import log
-from src.hardware import HARDWARE, ASM
+from src.hardware import HARDWARE, ASM, INSTRUCTION_IO, INSTRUCTION_EXIT
 
 ##
 ##  MAIN 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     log.logger.info('Starting emulator')
 
     ## setup our hardware and set memory size to 25 "cells"
-    HARDWARE.setup(25)
+    HARDWARE.setup(9999)
 
     ## Switch on computer
     HARDWARE.switchOn()
@@ -42,16 +42,19 @@ if __name__ == '__main__':
     ## new create the Operative System Kernel
     # "booteamos" el sistema operativo
     schedulerFCFS = FCFSScheduling()
-    schedulerPriorityExpropiative = PriorityScheduling(must_expropiate=True)
-    schedulerPriorityNoExpropiative = PriorityScheduling(must_expropiate=False)
-
+    schedulerPriorityExpropiative = PriorityScheduling(must_expropriate=True)
+    schedulerPriorityNoExpropiative = PriorityScheduling(must_expropriate=False)
 
     kernel = Kernel()
-    kernel.scheduler = schedulerPriorityNoExpropiative
+    kernel.scheduler = schedulerPriorityExpropiative
 
     setUpDisk()
+    i = [INSTRUCTION_IO, INSTRUCTION_EXIT]
+    HARDWARE.disk.save('C:/Program Files(x86)/calculadora/suma.exe', i)
 
     # execute programs
-    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 2)
-    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 6)
-    kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 1)
+    kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 3)
+    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 8)
+    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 5)
+    kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 4)
+    kernel.run('C:/Program Files(x86)/calculadora/suma.exe', 11)

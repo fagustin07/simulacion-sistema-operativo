@@ -1,6 +1,7 @@
 import unittest
 
 from src.so_components.pcb_managment import PCB, NEW_STATUS
+from src.so_components.scheduling import PCBInReadyQueue
 
 
 class PCBTest(unittest.TestCase):
@@ -17,6 +18,17 @@ class PCBTest(unittest.TestCase):
 
         self.assertEqual(pcb.priority, 4)
 
+    def test_a_pcb_in_ready_queue_is_comparable_by_temporal_priority(self):
+        pcb = PCB(0, 0, 4, 'first_pcb.exe', 8)
+        pcb2 = PCB(0, 0, 4, 'first_pcb.exe', 3)
+
+        pcb_in_rq1 = PCBInReadyQueue(pcb)
+        pcb_in_rq2 = PCBInReadyQueue(pcb2)
+
+        self.assertTrue(pcb_in_rq1 > pcb_in_rq2)
+
+        pcb_in_rq1.temp_priority -=6
+        self.assertFalse(pcb_in_rq1 > pcb_in_rq2)
 
 
 if __name__ == '__main__':
