@@ -63,14 +63,14 @@ class PriorityScheduling(AbstractScheduling):
 
     def __init__(self, must_expropriate):
         super().__init__()
-        self._expropiative = must_expropriate
+        self._expropiate = must_expropriate
         heapify(self._queue)
 
     def add(self, pcb_to_add):
-        self.check_if_expropiate(pcb_to_add)
+        self.add_or_check_if_expropiate_and_add(pcb_to_add)
 
-    def check_if_expropiate(self, pcb_to_add):
-        if self._expropiative and pcb_to_add.priority < self.running_pcb.priority:
+    def add_or_check_if_expropiate_and_add(self, pcb_to_add):
+        if self._expropiate and pcb_to_add.priority < self.running_pcb.priority:
             expropriated_pcb = self.running_pcb
             self.running_pcb = None
             DISPATCHER.save(expropriated_pcb)
@@ -87,10 +87,13 @@ class PriorityScheduling(AbstractScheduling):
 
     def next(self):
         next_pcb = heappop(self.readyQueue).pcb
+        self.check_if_need_increment_priority()
+        return next_pcb
+
+    def check_if_need_increment_priority(self):
         for pcb_in_rq in self.readyQueue:
             pcb_in_rq.check_if_increment_priority()
         heapify(self.readyQueue)
-        return next_pcb
 
 
 class PCBInReadyQueue:
