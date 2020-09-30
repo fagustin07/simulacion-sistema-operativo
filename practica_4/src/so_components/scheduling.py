@@ -67,9 +67,6 @@ class PriorityScheduling(AbstractScheduling):
         heapify(self._queue)
 
     def add(self, pcb_to_add):
-        self.add_or_check_if_expropiate_and_add(pcb_to_add)
-
-    def add_or_check_if_expropiate_and_add(self, pcb_to_add):
         if self._expropiate and pcb_to_add.priority < self.running_pcb.priority:
             expropriated_pcb = self.running_pcb
             self.running_pcb = None
