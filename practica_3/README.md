@@ -31,13 +31,24 @@ También se incluyeron 2 interrupciones
 
 - __1:__ Describir como funciona el __MMU__ y que datos necesitamos para correr un proceso
 
+<em>El  MMU es el encargado de manejar la transformacion de direcciones logicas del cpu en la direccion fisica real del programa. 
+Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza la operación llamada “fetch” que se encarga de buscar la siguiente instrucción del programa en ejecucion en la memoria, haciendo el mencionado traspaso de direccion logica a direccion fisica para obtener la direccion real de la instrucción. Posteriormente, realiza la lectura de la direccion fisica en memoria. </em>
+
 - __2:__ Entender las clases __IoDeviceController__, __PrinterIODevice__ y poder explicar como funcionan
 
+<em>El IODeviceController es el encargado de ejecutar las instrucciones IO que se le encarguen. Cuenta con una lista waiting, en donde iran a parar las instrucciones que esten esperando un lugar en el IO device. El PrinterIODevice simula ser un device cuya ejecucion de instruccion IO retiene al PCB que entra en él por 3 ticks de Clock.</em>
+
 - __3:__ Explicar cómo se llegan a ejecutar __IoInInterruptionHandler.execute()__ y  __IoOutInterruptionHandler.execute()__
+
+<em> Luego de que la CPU lee la direccion de memoria del programa(realizando el procedimiento previamente mencionado donde el MMU forma parte), y luego de que se decodifica esta instruccion(en nuestro simulador aun no se realiza la decodificacion) la instrucción del programa es ejecutada y en su ejecucion se lleva a cabo un determinado chequeo para constatar el tipo de instrucción del cual se trata. Si esta instrucción fuera de IOIN, la CPU genera una interrupcion de tipo IoInInterruption, la cual es manejada por el vector de interrupciones que se encarga de gestionar todas las interrupciones existentes. Este vector recibe la instrucción IO del programa y ejecuta el metodo correspondiente proveniente del IoInInterruptionHandler.</em>  
+
+<em> Luego de que el IoInInterruptionHandler guarde la informacion del estado actual del programa, cambie su estado a Waiting y le indique al IODeviceController que corra la instrucción IO (la cual sera ejecutada por el IO device siempre y cuando este no tenga ninguna otra instrucción corriendo, caso contrario se agregara a la waiting queue), el IO device levanta una interrupcion IoOutInterruption la cual es gestionada nuevamente por el vector de interrupciones. Este realiza el execute del IoOutInterruptionHandler, el cual se encarga de poner el programa de nuevo en cpu o el la ready queue.  </em>
 
 - __4:__    Hagamos un pequeño ejercicio (sin codificarlo):
 
 - __4.1:__ Que esta haciendo el CPU mientras se ejecuta una operación de I/O??
+
+<em> El cpu mientras se ejecuta una instrucción IO puede estar en estado NOOP, o puede estar ejecutando la instrucción de otro programa(siempre que exista otro programa cargado en memoria). </em>
 
 - __4.2:__ Si la ejecucion de una operacion de I/O (en un device) tarda 3 "ticks", cuantos ticks necesitamos para ejecuar el siguiente batch?? Cómo podemos mejorarlo??
     (tener en cuenta que en el emulador consumimos 1 tick para mandar a ejecutar la operacion a I/O)
@@ -47,6 +58,9 @@ También se incluyeron 2 interrupciones
     prg2 = Program("prg2.exe", [ASM.CPU(4), ASM.IO(), ASM.CPU(1)])
     prg3 = Program("prg3.exe", [ASM.CPU(3)])
     ```
+
+<em>Si la ejecucion de una operación IO tardara 3 ticks, y considerando que cada operación CPU tarda 1 tick, ademas del tick de reloj que se pierde por mandar a ejecutar cada operación IO, se tardarian 30 ticks en ejecutar el batch dado. Para mejorar ese tiempo, se podria ejecutar concurrentemente una instrucción de CPU de otro programa mientras el IO device estuviera ejecutando una instrucción IO, asi la CPU siempre estaria activa y se reducirian considerablemente la cantidad de ticks para ejecutar el batch. </em>
+
 
 - __5:__ Hay que tener en cuenta que los procesos se van a intentar ejecutar todos juntos ("concurrencia"), pero como solo tenemos un solo CPU, vamos a tener que administrar su uso de forma óptima.
       Como el S.O. es una "maquina de estados", donde las cosas "pasan" cada vez que se levanta una interrupcion (IRQ) vamos a tener que programar las 4 interrupciones que conocemos:  
