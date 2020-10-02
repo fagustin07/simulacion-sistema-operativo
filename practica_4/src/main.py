@@ -5,7 +5,8 @@ from src.hardware import HARDWARE, ASM, INSTRUCTION_IO, INSTRUCTION_EXIT
 ##  MAIN 
 ##
 from src.so import Kernel
-from src.so_components.scheduling import FCFSScheduling, PriorityScheduling
+from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
+from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
 
 
 def setUpDisk():
@@ -40,21 +41,21 @@ if __name__ == '__main__':
     HARDWARE.switchOn()
 
     ## new create the Operative System Kernel
-    # "booteamos" el sistema operativo
-    schedulerFCFS = FCFSScheduling()
-    schedulerPriorityExpropiative = PriorityScheduling(must_expropriate=True)
-    schedulerPriorityNoExpropiative = PriorityScheduling(must_expropriate=False)
-
+    # Kernel have FCFS algorithm by default.
     kernel = Kernel()
+    schedulerFCFS = FCFSScheduling(kernel)
+    schedulerPriorityExpropiative = PriorityScheduling(kernel, must_expropriate=True)
+    schedulerPriorityNoExpropiative = PriorityScheduling(kernel, must_expropriate=False)
+
     kernel.scheduler = schedulerPriorityExpropiative
 
     setUpDisk()
-    i = [INSTRUCTION_IO, INSTRUCTION_EXIT]
-    HARDWARE.disk.save('C:/Program Files(x86)/calculadora/suma.exe', i)
+    io_instruction = [INSTRUCTION_IO, INSTRUCTION_EXIT]
+    HARDWARE.disk.save('C:/Program Files(x86)/calculadora/suma.exe', io_instruction)
 
     # execute programs
     kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 3)
-    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 8)
+    kernel.run('C:/Program Files(x86)/calculadora/suma.exe', 11)
     kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 5)
     kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 4)
-    kernel.run('C:/Program Files(x86)/calculadora/suma.exe', 11)
+    kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 8)

@@ -2,8 +2,7 @@ import unittest
 
 from src.hardware import ASM, HARDWARE
 from src.so import Kernel
-from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS, WAITING_STATUS, FINISHED_STATUS, NEW_STATUS
-from src.so_components.scheduling import FCFSScheduling
+from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS, WAITING_STATUS, FINISHED_STATUS
 
 
 def load_programs():

@@ -5,7 +5,7 @@ from src.hardware import HARDWARE
 from src.so_components.interruptions_handlers import *
 from src.so_components.io_device_controller import IoDeviceController
 from src.so_components.pcb_managment import PCBTable
-from src.so_components.scheduling import *
+from src.so_components.scheduling_algorithms.fcfs_scheduling import *
 
 
 # emulates the core of an Operative System
@@ -31,13 +31,18 @@ class Kernel:
 
         # Service
         self._pcb_table = PCBTable()
-        self._scheduler = FCFSScheduling()
+        self._scheduler = FCFSScheduling(self)
 
     def run_next_if_exist(self):
-        self.scheduler.run_next_if_exist()
+        if not self.scheduler.is_empty():
+            next_pcb = self.scheduler.next()
+            self.scheduler.run_pcb(next_pcb)
 
     def run_or_add_to_ready_queue(self, a_pcb):
-        self.scheduler.run_or_add_to_ready_queue(a_pcb)
+        if self.pcb_table.running_pcb is None:
+            self.scheduler.run_pcb(a_pcb)
+        else:
+            self.scheduler.add(a_pcb)
 
     ## emulates a "system call" for programs execution
     def run(self, path, priority):
@@ -45,6 +50,12 @@ class Kernel:
         HARDWARE.interruptVector.handle(newIRQ)
         log.logger.info("\n Executing program: {name}".format(name=path))
         log.logger.info(HARDWARE)
+
+    def running_pcb(self):
+        return self.pcb_table.running_pcb
+
+    def change_running_pcb(self, a_pcb):
+        self.pcb_table.running_pcb = a_pcb
 
     @property
     def io_device_controller(self):

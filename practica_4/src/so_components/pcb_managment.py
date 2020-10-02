@@ -10,9 +10,18 @@ class PCBTable:
     def __init__(self):
         self._table = []
         self._pid = 0
+        self._running_pcb = None
 
     def add(self, a_pcb):
         self._table.append(a_pcb)
+
+    @property
+    def running_pcb(self):
+        return self._running_pcb
+
+    @running_pcb.setter
+    def running_pcb(self, value):
+        self._running_pcb = value
 
     @property
     def table(self):

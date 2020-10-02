@@ -37,9 +37,9 @@ class KillInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         log.logger.info(" Program Finished ")
 
-        pcb_to_kill = self.kernel.scheduler.running_pcb
+        pcb_to_kill = self.kernel.running_pcb()
         pcb_to_kill.status = FINISHED_STATUS
-        self.kernel.scheduler.running_pcb = None
+        self.kernel.change_running_pcb(None)
         DISPATCHER.save(pcb_to_kill)
 
         self.kernel.run_next_if_exist()
@@ -49,8 +49,8 @@ class IoInInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         operation = irq.parameters
-        io_in_pcb = self.kernel.scheduler.running_pcb
-        self.kernel.scheduler.running_pcb = None
+        io_in_pcb = self.kernel.running_pcb()
+        self.kernel.change_running_pcb(None)
         DISPATCHER.save(io_in_pcb)
         io_in_pcb.status = WAITING_STATUS
 
