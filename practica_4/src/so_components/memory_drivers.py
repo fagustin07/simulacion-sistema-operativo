@@ -27,6 +27,7 @@ class Dispatcher:
         pass
 
     def load(self, a_pcb):
+        HARDWARE.timer.reset()
         HARDWARE.mmu.baseDir = a_pcb.base_dir
         HARDWARE.mmu.limit = a_pcb.limit
         HARDWARE.cpu.pc = a_pcb.pc

@@ -67,3 +67,14 @@ class IoOutInterruptionHandler(AbstractInterruptionHandler):
         log.logger.info(self.kernel.io_device_controller)
 
         self.kernel.run_or_add_to_ready_queue(io_out_pcb)
+
+
+class TimeoutInterruptionHandler(AbstractInterruptionHandler):
+
+    def execute(self, irq):
+        run_pcb = self.kernel.running_pcb()
+        DISPATCHER.save(run_pcb)
+        self.kernel.change_running_pcb(None)
+        self.kernel.scheduler.add_to_ready_queue(run_pcb)
+
+        self.kernel.run_next_if_exist()
