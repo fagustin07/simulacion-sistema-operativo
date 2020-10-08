@@ -26,6 +26,9 @@ class Kernel:
         ioOutHandler = IoOutInterruptionHandler(self)
         HARDWARE.interruptVector.register(IO_OUT_INTERRUPTION_TYPE, ioOutHandler)
 
+        timeoutHandler = TimeoutInterruptionHandler(self)
+        HARDWARE.interruptVector.register(TIMEOUT_INTERRUPTION_TYPE, timeoutHandler)
+
         ## controls the Hardware's I/O Device
         self._ioDeviceController = IoDeviceController(HARDWARE.ioDevice)
 
@@ -35,14 +38,16 @@ class Kernel:
 
     def run_next_if_exist(self):
         if not self.scheduler.is_empty():
-            next_pcb = self.scheduler.next()
-            self.scheduler.run_pcb(next_pcb)
+            self.run_next()
 
     def run_or_add_to_ready_queue(self, a_pcb):
         if self.pcb_table.running_pcb is None:
             self.scheduler.run_pcb(a_pcb)
         else:
             self.scheduler.add(a_pcb)
+
+    def run_next(self):
+        self.scheduler.run_next()
 
     ## emulates a "system call" for programs execution
     def run(self, path, priority):

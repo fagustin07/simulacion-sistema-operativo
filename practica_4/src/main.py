@@ -7,10 +7,11 @@ from src.hardware import HARDWARE, ASM, INSTRUCTION_IO, INSTRUCTION_EXIT
 from src.so import Kernel
 from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
 from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
+from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
 
 
 def setUpDisk():
-    instructions_1 = ASM.CPU(2)
+    instructions_1 = ASM.CPU(4)
     instructions_1.append(ASM.IO())
     instructions_1.extend(ASM.CPU(2))
     instructions_1.append(ASM.IO())
@@ -46,8 +47,9 @@ if __name__ == '__main__':
     schedulerFCFS = FCFSScheduling(kernel)
     schedulerPriorityExpropiative = PriorityScheduling(kernel, must_expropriate=True)
     schedulerPriorityNoExpropiative = PriorityScheduling(kernel, must_expropriate=False)
+    schedulerRR = RoundRobinScheduling(kernel, 3)
 
-    kernel.scheduler = schedulerPriorityExpropiative
+    kernel.scheduler = schedulerRR
 
     setUpDisk()
     io_instruction = [INSTRUCTION_IO, INSTRUCTION_EXIT]

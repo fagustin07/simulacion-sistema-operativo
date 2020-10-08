@@ -3,6 +3,7 @@ import unittest
 from src.hardware import ASM, HARDWARE
 from src.so import Kernel
 from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS, WAITING_STATUS, FINISHED_STATUS
+from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
 
 
 def load_programs():
@@ -46,6 +47,16 @@ class KernelTest(unittest.TestCase):
         hw = HARDWARE
         self.assertEqual(FINISHED_STATUS, self.kernel.pcb_table.table[0].status)
 
+    def test_kernel_with_Round_Robin_scheduler(self):
+        self.kernel.scheduler = RoundRobinScheduling(self.kernel,1)
+        self.kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', None)
+        self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', None)
+
+        HARDWARE.clock.do_ticks(2)
+
+        self.assertEqual(self.kernel.running_pcb(), self.kernel.pcb_table.table[1])
+        self.assertEqual(self.kernel.pcb_table.table[0].status, READY_STATUS)
+        self.assertEqual(self.kernel.pcb_table.table[1].status, RUNNING_STATUS)
 
 if __name__ == '__main__':
     unittest.main()
