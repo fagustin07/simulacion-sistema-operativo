@@ -28,7 +28,7 @@ class SchedulersTest(unittest.TestCase):
 
         self.assertEqual(self.new_pcb, self.schedulerFCFS.kernel.running_pcb())
 
-    def test_scheduling_priority_expropriation(self):
+    def test_scheduling_priority_preemptive(self):
         self.kernel.scheduler = self.schedulerPriorityExpropiative
 
         self.schedulerPriorityExpropiative.run_pcb(self.new_pcb)
@@ -40,7 +40,7 @@ class SchedulersTest(unittest.TestCase):
         self.assertEqual(RUNNING_STATUS, high_priority_pcb.status)
         self.assertEqual(READY_STATUS, self.new_pcb.status)
 
-    def test_scheduler_priority_non_expropriation(self):
+    def test_scheduler_priority_non_preemptibe(self):
         self.kernel.scheduler = self.schedulerPriorityNoExpropiative
         self.schedulerPriorityNoExpropiative.run_pcb(self.new_pcb)
 

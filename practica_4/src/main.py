@@ -8,6 +8,7 @@ from src.so import Kernel
 from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
 from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
 from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
+from src.so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
 
 
 def setUpDisk():
@@ -18,7 +19,7 @@ def setUpDisk():
     instructions_1.extend(ASM.CPU(3))
     instructions_1.extend(ASM.EXIT(1))
 
-    instructions_2 = ASM.CPU(4)
+    instructions_2 = ASM.CPU(1)
     instructions_2.append(ASM.IO())
     instructions_2.extend(ASM.EXIT(1))
 
@@ -45,11 +46,11 @@ if __name__ == '__main__':
     # Kernel have FCFS algorithm by default.
     kernel = Kernel()
     schedulerFCFS = FCFSScheduling(kernel)
-    schedulerPriorityExpropiative = PriorityScheduling(kernel, must_expropriate=True)
-    schedulerPriorityNoExpropiative = PriorityScheduling(kernel, must_expropriate=False)
-    schedulerRR = RoundRobinScheduling(kernel, 3)
-
-    kernel.scheduler = schedulerRR
+    schedulerPriorityPreemptive = PriorityScheduling(kernel, must_expropriate=True)
+    schedulerPriorityNonPreemptive = PriorityScheduling(kernel, must_expropriate=False)
+    # schedulerRR = RoundRobinScheduling(kernel, 3)
+    schedulerSJFPreemptive = ShortestJobFirstScheduling(kernel,must_expropriate= True)
+    schedulerSJFNonPreemptive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
 
     setUpDisk()
     io_instruction = [INSTRUCTION_IO, INSTRUCTION_EXIT]

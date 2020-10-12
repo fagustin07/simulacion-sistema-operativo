@@ -2,26 +2,13 @@ from heapq import heapify, heappush, heappop
 
 from src.so_components.memory_drivers import DISPATCHER
 from src.so_components.pcb_managment import READY_STATUS
-from src.so_components.scheduling_algorithms.abstract_scheduling import AbstractScheduling
+from src.so_components.scheduling_algorithms.abstract_comparative_scheduling import AbstractComparativeScheduling
 
 
-class PriorityScheduling(AbstractScheduling):
+class PriorityScheduling(AbstractComparativeScheduling):
 
-    def __init__(self, kernel, must_expropriate):
-        super().__init__(kernel)
-        self._expropriate = must_expropriate
-        heapify(self._ready_queue)
-
-    def add(self, pcb_to_add):
-        if self._expropriate and pcb_to_add.priority < self.kernel.running_pcb().priority:
-            expropriated_pcb = self.kernel.running_pcb()
-            self.kernel.change_running_pcb(None)
-            DISPATCHER.save(expropriated_pcb)
-
-            self.add_to_ready_queue(expropriated_pcb)
-            self.run_pcb(pcb_to_add)
-        else:
-            self.add_to_ready_queue(pcb_to_add)
+    def check_condition(self, pcb_to_add):
+        return pcb_to_add.priority < self.kernel.running_pcb().priority
 
     def next(self):
         next_pcb = heappop(self.readyQueue).pcb

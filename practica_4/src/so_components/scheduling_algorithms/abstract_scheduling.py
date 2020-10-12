@@ -1,5 +1,5 @@
 import abc
-from src import log
+
 from src.so_components.memory_drivers import DISPATCHER
 from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS
 
@@ -17,17 +17,17 @@ class AbstractScheduling:
     def is_empty(self):
         return len(self._ready_queue) == 0
 
+    @abc.abstractmethod
     def add(self, pcb):
-            self.add_to_ready_queue(pcb)
+        pass
 
+    @abc.abstractmethod
     def next(self):
-        next_pcb = self._ready_queue[0]
-        self._ready_queue.pop(0)
-        return next_pcb
+        pass
 
+    @abc.abstractmethod
     def add_to_ready_queue(self, pcb):
-        pcb.status = READY_STATUS
-        self._ready_queue.append(pcb)
+        pass
 
     def run_next(self):
         self.run_pcb(self.next())
@@ -39,4 +39,3 @@ class AbstractScheduling:
     @property
     def readyQueue(self):
         return self._ready_queue
-

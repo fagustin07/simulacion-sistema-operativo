@@ -1,7 +1,5 @@
+from src.so_components.scheduling_algorithms.abstract_no_comparative_scheduling import AbstractNoComparativeScheduling
 
-from src.so_components.scheduling_algorithms.abstract_scheduling import AbstractScheduling
 
-
-class FCFSScheduling(AbstractScheduling):
+class FCFSScheduling(AbstractNoComparativeScheduling):
     pass
-

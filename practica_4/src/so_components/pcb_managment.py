@@ -86,3 +86,9 @@ class PCB:
 
     def __repr__(self):
         return "PID: {pid} -> PATH: {name}".format(pid=self.pid, name=self._path)
+
+    def burst(self):
+        return self.limit - self.base_dir
+
+    def __gt__(self, pcb_in_queue):
+        return self.burst() > pcb_in_queue.burst()

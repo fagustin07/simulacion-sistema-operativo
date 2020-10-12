@@ -4,17 +4,22 @@ from src.hardware import ASM, HARDWARE
 from src.so import Kernel
 from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS, WAITING_STATUS, FINISHED_STATUS
 from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
+from src.so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
 
 
 def load_programs():
-    instructions_1 = ASM.CPU(2)
+    instructions_1 = ASM.CPU(4)
     instructions_1.extend(ASM.EXIT(1))
 
     instructions_2 = [ASM.IO()]
     instructions_2.extend(ASM.EXIT(1))
 
+    instructions_3 = ASM.CPU(1)
+    instructions_3.extend(ASM.EXIT(1))
+
     HARDWARE.disk.save('C:/Program Files(x86)/pyCharm/pyCharm.exe', instructions_1)
     HARDWARE.disk.save('C:/Users/ATRR/Download/vlc-setup.msi', instructions_2)
+    HARDWARE.disk.save('C:/Users/ATRR/Download/java.exe', instructions_3)
 
 
 class KernelTest(unittest.TestCase):
@@ -48,7 +53,7 @@ class KernelTest(unittest.TestCase):
         self.assertEqual(FINISHED_STATUS, self.kernel.pcb_table.table[0].status)
 
     def test_kernel_with_Round_Robin_scheduler(self):
-        self.kernel.scheduler = RoundRobinScheduling(self.kernel,1)
+        self.kernel.scheduler = RoundRobinScheduling(self.kernel, 1)
         self.kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', None)
         self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', None)
 
@@ -57,6 +62,31 @@ class KernelTest(unittest.TestCase):
         self.assertEqual(self.kernel.running_pcb(), self.kernel.pcb_table.table[1])
         self.assertEqual(self.kernel.pcb_table.table[0].status, READY_STATUS)
         self.assertEqual(self.kernel.pcb_table.table[1].status, RUNNING_STATUS)
+
+    def test_kernel_with_shortest_job_first_preemptive(self):
+        self.kernel.scheduler = ShortestJobFirstScheduling(self.kernel, must_expropriate=True)
+        self.kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', None)
+        self.kernel.run('C:/Users/ATRR/Download/java.exe', None)
+
+        HARDWARE.clock.do_ticks(1)
+
+        self.assertEqual(self.kernel.running_pcb(), self.kernel.pcb_table.table[1])
+        self.assertEqual(self.kernel.pcb_table.table[0].status, READY_STATUS)
+        self.assertEqual(self.kernel.pcb_table.table[1].status, RUNNING_STATUS)
+
+    def test_kernel_with_shortest_job_first_non_preemptive(self):
+        self.kernel.scheduler = ShortestJobFirstScheduling(self.kernel, must_expropriate= False)
+        self.kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', None)
+        self.kernel.run('C:/Users/ATRR/Download/java.exe', None)
+
+        HARDWARE.clock.do_ticks(1)
+
+        self.assertEqual(self.kernel.running_pcb(), self.kernel.pcb_table.table[0])
+        self.assertEqual(self.kernel.pcb_table.table[0].status, RUNNING_STATUS)
+        self.assertEqual(self.kernel.pcb_table.table[1].status, READY_STATUS)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
