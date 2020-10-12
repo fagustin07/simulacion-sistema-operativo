@@ -1,13 +1,12 @@
 from heapq import heapify, heappush, heappop
 
-from src.so_components.memory_drivers import DISPATCHER
 from src.so_components.pcb_managment import READY_STATUS
 from src.so_components.scheduling_algorithms.abstract_comparative_scheduling import AbstractComparativeScheduling
 
 
 class PriorityScheduling(AbstractComparativeScheduling):
 
-    def check_condition(self, pcb_to_add):
+    def must_expropiate(self, pcb_to_add):
         return pcb_to_add.priority < self.kernel.running_pcb().priority
 
     def next(self):

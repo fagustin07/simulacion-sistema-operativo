@@ -1,10 +1,11 @@
 from src import log
-from src.hardware import HARDWARE, ASM, INSTRUCTION_IO, INSTRUCTION_EXIT
+from src.hardware import HARDWARE, ASM
 
 ##
 ##  MAIN 
 ##
 from src.so import Kernel
+from src.so_components.helpers import generate
 from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
 from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
 from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
@@ -12,31 +13,22 @@ from src.so_components.scheduling_algorithms.shortest_job_first_scheduling impor
 
 
 def setUpDisk():
-    instructions_1 = ASM.CPU(4)
-    instructions_1.append(ASM.IO())
-    instructions_1.extend(ASM.CPU(2))
-    instructions_1.append(ASM.IO())
-    instructions_1.extend(ASM.CPU(3))
-    instructions_1.extend(ASM.EXIT(1))
-
-    instructions_2 = ASM.CPU(1)
-    instructions_2.append(ASM.IO())
-    instructions_2.extend(ASM.EXIT(1))
-
-    instructions_3 = [ASM.IO()]
-    instructions_3.extend(ASM.CPU(2))
-    instructions_3.extend(ASM.EXIT(1))
+    instructions_1 = generate([ASM.CPU(4), ASM.IO(), ASM.CPU(2), ASM.IO(), ASM.CPU(3)])
+    instructions_2 = generate([ASM.CPU(1), ASM.IO()])
+    instructions_3 = generate([ASM.IO(), ASM.CPU(2)])
+    io_instruction = generate([ASM.IO()])
 
     HARDWARE.disk.save('C:/Program Files(x86)/pyCharm/pyCharm.exe', instructions_1)
     HARDWARE.disk.save('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', instructions_2)
     HARDWARE.disk.save('C:/Users/ATRR/Download/vlc-setup.msi', instructions_3)
+    HARDWARE.disk.save('C:/Program Files(x86)/calculadora/suma.exe', io_instruction)
 
 
 if __name__ == '__main__':
     log.setupLogger()
     log.logger.info('Starting emulator')
 
-    ## setup our hardware and set memory size to 25 "cells"
+    ## setup our hardware and set memory size to 9999 "cells"
     HARDWARE.setup(9999)
 
     ## Switch on computer
@@ -45,16 +37,20 @@ if __name__ == '__main__':
     ## new create the Operative System Kernel
     # Kernel have FCFS algorithm by default.
     kernel = Kernel()
-    schedulerFCFS = FCFSScheduling(kernel)
-    schedulerPriorityPreemptive = PriorityScheduling(kernel, must_expropriate=True)
-    schedulerPriorityNonPreemptive = PriorityScheduling(kernel, must_expropriate=False)
-    # schedulerRR = RoundRobinScheduling(kernel, 3)
-    schedulerSJFPreemptive = ShortestJobFirstScheduling(kernel,must_expropriate= True)
-    schedulerSJFNonPreemptive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
+
+    # SCHEDULING ALGORITHMS.
+    # Remove comment over line 51 and reemplace `your_scheduler` for the
+    # scheduler who you wants to ran.
+    first_come_first_serve = FCFSScheduling(kernel)
+    round_robin = RoundRobinScheduling(kernel, 3)
+    priority_preemptive = PriorityScheduling(kernel, must_expropriate=True)
+    priority_non_preemptive = PriorityScheduling(kernel, must_expropriate=False)
+    shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
+    shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
+
+    # kernel.scheduler = your_scheduler
 
     setUpDisk()
-    io_instruction = [INSTRUCTION_IO, INSTRUCTION_EXIT]
-    HARDWARE.disk.save('C:/Program Files(x86)/calculadora/suma.exe', io_instruction)
 
     # execute programs
     kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 3)

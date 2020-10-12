@@ -12,7 +12,7 @@ class AbstractComparativeScheduling(AbstractScheduling):
         heapify(self.readyQueue)
 
     def add(self, pcb_to_add):
-        if self._is_preemptive and self.check_condition(pcb_to_add):
+        if self._is_preemptive and self.must_expropiate(pcb_to_add):
             expropriated_pcb = self.kernel.running_pcb()
             self.kernel.change_running_pcb(None)
             DISPATCHER.save(expropriated_pcb)
@@ -23,5 +23,5 @@ class AbstractComparativeScheduling(AbstractScheduling):
             self.add_to_ready_queue(pcb_to_add)
 
     @abc.abstractmethod
-    def check_condition(self, pcb):
+    def must_expropiate(self, pcb):
         pass

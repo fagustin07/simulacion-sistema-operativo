@@ -2,6 +2,7 @@ import unittest
 
 from src.hardware import INSTRUCTION_CPU, INSTRUCTION_IO, INSTRUCTION_EXIT, ASM
 from src.so_components.disk import Disk
+from src.so_components.helpers import generate
 
 
 class DiskTest(unittest.TestCase):
@@ -10,7 +11,7 @@ class DiskTest(unittest.TestCase):
         self.disk = Disk()
 
     def test_disk_save_programs(self):
-        instrs = [INSTRUCTION_CPU, INSTRUCTION_CPU, INSTRUCTION_CPU, INSTRUCTION_IO, INSTRUCTION_EXIT]
+        instrs = generate([ASM.CPU(2),ASM.IO()])
 
         self.disk.save('H:/paint/paint.exe', instrs)
 

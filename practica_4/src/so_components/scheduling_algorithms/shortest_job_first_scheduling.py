@@ -5,7 +5,7 @@ from src.so_components.scheduling_algorithms.abstract_comparative_scheduling imp
 
 class ShortestJobFirstScheduling(AbstractComparativeScheduling):
 
-    def check_condition(self, pcb_to_add):
+    def must_expropiate(self, pcb_to_add):
         return pcb_to_add.burst() < self.kernel.running_pcb().burst()
 
     def next(self):
