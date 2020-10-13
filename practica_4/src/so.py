@@ -76,9 +76,48 @@ class Kernel:
                 self.stats[data][READY_STATUS] = 0
                 self._add_status(data, pcbs_stats[data][1])
         if self.pcb_table.all_end():
-            Printer().print(self.stats)
-            # apagamos la cpu para que se puedan analizar los datos
-            HARDWARE.switchOff()
+            self._show_stats()
+
+    def _show_stats(self):
+        total_tat = 0
+        total_wt = 0
+        for pid in self.stats:
+            process_wt = self.stats[pid][READY_STATUS]
+            process_tat = process_wt + self.stats[pid][RUNNING_STATUS]
+            total_tat += process_tat
+            total_wt += process_wt
+            self._show_process_info(pid, process_tat, process_wt)
+
+        self._show_total_stats(total_tat, total_wt)
+        self._show_average(total_tat, total_wt)
+
+        # apagamos la cpu para que se puedan analizar los datos
+        HARDWARE.switchOff()
+
+    def _exist_pid(self, pid):
+        for pid_key in self.stats.keys():
+            if pid == pid_key: return True
+        return False
+
+    def _show_process_info(self, pid, process_tat, process_wt):
+        log.logger.info("Process: {pid} -> Waiting Time {wt} | Turnaround Time:{tat}"
+                        .format(pid=pid, tat=process_tat, wt=process_wt))
+
+    def _show_average(self, total_tat, total_wt):
+        log.logger.info("Average Waiting Time: {a_wt} | Average Turnaround Time: {a_tat}"
+                        .format(a_wt=total_wt / len(self.stats),
+                                a_tat=total_tat / len(self.stats)))
+
+    def _show_total_stats(self, total_tat, total_wt):
+        log.logger.info("Total Waiting Time: {t_wt} | Total Turnaround Time: {t_tat}"
+                        .format(t_wt=total_wt, t_tat=total_tat))
+
+    def _add_status(self, pid, status):
+        if self._is_ready_or_running(status):
+            self.stats[pid][status] += 1
+
+    def _is_ready_or_running(self, status):
+        return status == RUNNING_STATUS or status == READY_STATUS
 
     @property
     def io_device_controller(self):
@@ -102,73 +141,3 @@ class Kernel:
 
     def __repr__(self):
         return "Kernel "
-
-    def _exist_pid(self, pid):
-        for pid_key in self.stats.keys():
-            if pid == pid_key: return True
-        return False
-
-    def _show_stats(self):
-        total_tat = 0
-        total_wt = 0
-        for pid in self.stats:
-            process_wt = self.stats[pid][READY_STATUS]
-            process_tat = process_wt + self.stats[pid][RUNNING_STATUS]
-            total_tat += process_tat
-            total_wt += process_wt
-            self._show_process_info(pid, process_tat, process_wt)
-
-        self._show_total_stats(total_tat, total_wt)
-        self._show_average(total_tat, total_wt)
-
-        # apagamos la cpu para que se puedan analizar los datos
-        HARDWARE.switchOff()
-
-    def _show_process_info(self, pid, process_tat, process_wt):
-        log.logger.info("Process: {pid} -> Waiting Time {wt} | Turnaround Time:{tat}"
-                        .format(pid=pid, tat=process_tat, wt=process_wt))
-
-    def _show_average(self, total_tat, total_wt):
-        log.logger.info("Average Waiting Time: {a_wt} | Average Turnaround Time: {a_tat}"
-                        .format(a_wt=total_wt / len(self.stats),
-                                a_tat=total_tat / len(self.stats)))
-
-    def _show_total_stats(self, total_tat, total_wt):
-        log.logger.info("Total Waiting Time: {t_wt} | Total Turnaround Time: {t_tat}"
-                        .format(t_wt=total_wt, t_tat=total_tat))
-
-    def _add_status(self, pid, status):
-        if self._is_ready_or_running(status):
-            self.stats[pid][status] += 1
-
-    def _is_ready_or_running(self, status):
-        return status == RUNNING_STATUS or status == READY_STATUS
-
-
-class Printer:
-
-    def print(self, stats):
-        total_tat = 0
-        total_wt = 0
-        for pid in stats:
-            process_wt = stats[pid][READY_STATUS]
-            process_tat = process_wt + stats[pid][RUNNING_STATUS]
-            total_tat += process_tat
-            total_wt += process_wt
-            self._show_process_info(pid, process_tat, process_wt)
-
-        self._show_total_stats(total_tat, total_wt)
-        self._show_average(total_tat, total_wt, stats)
-
-    def _show_process_info(self, pid, process_tat, process_wt):
-        log.logger.info("Process: {pid} -> Waiting Time {wt} | Turnaround Time:{tat}"
-                        .format(pid=pid, tat=process_tat, wt=process_wt))
-
-    def _show_average(self, total_tat, total_wt, stats):
-        log.logger.info("Average Waiting Time: {a_wt} | Average Turnaround Time: {a_tat}"
-                        .format(a_wt=total_wt / len(stats),
-                                a_tat=total_tat / len(stats)))
-
-    def _show_total_stats(self, total_tat, total_wt):
-        log.logger.info("Total Waiting Time: {t_wt} | Total Turnaround Time: {t_tat}"
-                        .format(t_wt=total_wt, t_tat=total_tat))
