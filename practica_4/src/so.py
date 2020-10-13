@@ -76,7 +76,9 @@ class Kernel:
                 self.stats[data][READY_STATUS] = 0
                 self._add_status(data, pcbs_stats[data][1])
         if self.pcb_table.all_end():
-            self._show_stats()
+            Printer().print(self.stats)
+            # apagamos la cpu para que se puedan analizar los datos
+            HARDWARE.switchOff()
 
     @property
     def io_device_controller(self):
@@ -110,7 +112,7 @@ class Kernel:
         total_tat = 0
         total_wt = 0
         for pid in self.stats:
-            process_wt  = self.stats[pid][READY_STATUS]
+            process_wt = self.stats[pid][READY_STATUS]
             process_tat = process_wt + self.stats[pid][RUNNING_STATUS]
             total_tat += process_tat
             total_wt += process_wt
@@ -141,3 +143,32 @@ class Kernel:
 
     def _is_ready_or_running(self, status):
         return status == RUNNING_STATUS or status == READY_STATUS
+
+
+class Printer:
+
+    def print(self, stats):
+        total_tat = 0
+        total_wt = 0
+        for pid in stats:
+            process_wt = stats[pid][READY_STATUS]
+            process_tat = process_wt + stats[pid][RUNNING_STATUS]
+            total_tat += process_tat
+            total_wt += process_wt
+            self._show_process_info(pid, process_tat, process_wt)
+
+        self._show_total_stats(total_tat, total_wt)
+        self._show_average(total_tat, total_wt, stats)
+
+    def _show_process_info(self, pid, process_tat, process_wt):
+        log.logger.info("Process: {pid} -> Waiting Time {wt} | Turnaround Time:{tat}"
+                        .format(pid=pid, tat=process_tat, wt=process_wt))
+
+    def _show_average(self, total_tat, total_wt, stats):
+        log.logger.info("Average Waiting Time: {a_wt} | Average Turnaround Time: {a_tat}"
+                        .format(a_wt=total_wt / len(stats),
+                                a_tat=total_tat / len(stats)))
+
+    def _show_total_stats(self, total_tat, total_wt):
+        log.logger.info("Total Waiting Time: {t_wt} | Total Turnaround Time: {t_tat}"
+                        .format(t_wt=total_wt, t_tat=total_tat))
