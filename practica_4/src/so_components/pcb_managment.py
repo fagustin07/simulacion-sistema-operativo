@@ -36,6 +36,17 @@ class PCBTable:
         self._pid += 1
         return pid_to_provide
 
+    def all_end(self):
+        for pcb in self.table:
+            if not pcb.is_finished(): return False
+        return True
+
+    def all_pids(self):
+        pids = []
+        for pcb in self.table:
+            pids.append(pcb.pid)
+        return pids
+
 
 class PCB:
 
@@ -47,6 +58,9 @@ class PCB:
         self._priority = priority
         self._status = NEW_STATUS
         self._pc = 0
+
+    def is_finished(self):
+        return self.status==FINISHED_STATUS
 
     @property
     def limit(self):

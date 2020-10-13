@@ -85,7 +85,16 @@ class KernelTest(unittest.TestCase):
         self.assertEqual(self.kernel.pcb_table.table[0].status, RUNNING_STATUS)
         self.assertEqual(self.kernel.pcb_table.table[1].status, READY_STATUS)
 
+    def test_stats(self):
+        HARDWARE.cpu.enable_stats = True
+        self.kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', None)
+        self.kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', None)
+        self.kernel.run('C:/Users/ATRR/Download/java.exe', None)
 
+        HARDWARE.clock.do_ticks(13)
+        expected_stats = {0: {'RUNNING': 5, 'READY': 0}, 1: {'RUNNING': 5, 'READY': 5}, 2: {'RUNNING': 2, 'READY': 10}}
+        self.assertTrue(self.kernel.pcb_table.all_end())
+        self.assertEqual(expected_stats,self.kernel.stats)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 from src import log
+from src.hardware import HARDWARE
 from src.so_components.memory_drivers import LOADER, DISPATCHER
 from src.so_components.pcb_managment import READY_STATUS, RUNNING_STATUS, WAITING_STATUS, FINISHED_STATUS, PCB
 
@@ -78,3 +79,14 @@ class TimeoutInterruptionHandler(AbstractInterruptionHandler):
 
         self.kernel.scheduler.add_to_ready_queue(run_pcb)
         self.kernel.run_next()
+
+class StatsInterruptionHandler(AbstractInterruptionHandler):
+
+    def execute(self, irq):
+        tick_number = HARDWARE.clock.currentTick
+        pcbs = self.kernel.pcb_table.table
+        stats = dict()
+        for pcb in pcbs:
+            stats[pcb.pid] = [tick_number, pcb.status]
+
+        self.kernel.register(stats)

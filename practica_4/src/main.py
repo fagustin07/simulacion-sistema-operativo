@@ -13,7 +13,7 @@ from src.so_components.scheduling_algorithms.shortest_job_first_scheduling impor
 
 
 def setUpDisk():
-    instructions_1 = generate([ASM.CPU(4), ASM.IO(), ASM.CPU(2), ASM.IO(), ASM.CPU(3)])
+    instructions_1 = generate([ASM.CPU(3), ASM.IO(), ASM.CPU(2), ASM.CPU(3)])
     instructions_2 = generate([ASM.CPU(1), ASM.IO()])
     instructions_3 = generate([ASM.IO(), ASM.CPU(2)])
     io_instruction = generate([ASM.IO()])
@@ -39,17 +39,19 @@ if __name__ == '__main__':
     kernel = Kernel()
 
     # SCHEDULING ALGORITHMS.
-    # Remove comment over line 51 and reemplace `your_scheduler` for the
-    # scheduler who you wants to ran.
-    first_come_first_serve = FCFSScheduling(kernel)
-    round_robin = RoundRobinScheduling(kernel, 3)
-    priority_preemptive = PriorityScheduling(kernel, must_expropriate=True)
-    priority_non_preemptive = PriorityScheduling(kernel, must_expropriate=False)
-    shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
-    shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
+    # Remove comment over line 52 and from scheduler who you wants to ran and reemplace
+    # `your_scheduler` for selected scheduler.
+
+    # first_come_first_serve = FCFSScheduling(kernel)
+    # round_robin = RoundRobinScheduling(kernel, 3)
+    # priority_preemptive = PriorityScheduling(kernel, must_expropriate=True)
+    # priority_non_preemptive = PriorityScheduling(kernel, must_expropriate=False)
+    # shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
+    # shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
 
     # kernel.scheduler = your_scheduler
 
+    HARDWARE.cpu.enable_stats = True
     setUpDisk()
 
     # execute programs
