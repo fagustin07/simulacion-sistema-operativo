@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from src import tabulate, log
+from src import log
 from time import sleep
 from threading import Thread, Lock
-import src.log
 
 ##  Estas son la instrucciones soportadas por nuestro CPU
 from src.so_components.disk import Disk

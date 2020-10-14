@@ -1,7 +1,7 @@
 from src import log
 from src.hardware import HARDWARE
 from src.so_components.memory_drivers import LOADER, DISPATCHER
-from src.so_components.pcb_managment import READY_STATUS, RUNNING_STATUS, WAITING_STATUS, FINISHED_STATUS, PCB
+from src.so_components.pcb_managment import WAITING_STATUS, FINISHED_STATUS, PCB
 
 
 ## emulates the  Interruptions Handlers
@@ -89,4 +89,4 @@ class StatsInterruptionHandler(AbstractInterruptionHandler):
         for pcb in pcbs:
             stats[pcb.pid] = [tick_number, pcb.status]
 
-        self.kernel.register(stats)
+        self.kernel.stats_manager.register(stats)

@@ -7,8 +7,10 @@ from src.so_components.io_device_controller import IoDeviceController
 from src.so_components.pcb_managment import PCBTable
 from src.so_components.scheduling_algorithms.fcfs_scheduling import *
 
-
 # emulates the core of an Operative System
+from src.so_components.stats_manager import StatsManager
+
+
 class Kernel:
 
     def __init__(self):
@@ -38,7 +40,7 @@ class Kernel:
         # Service
         self._pcb_table = PCBTable()
         self._scheduler = FCFSScheduling(self)
-        self._stats = dict()
+        self._stats_manager = StatsManager(self)
 
     def run_next_if_exist(self):
         if not self.scheduler.is_empty():
@@ -66,59 +68,6 @@ class Kernel:
     def change_running_pcb(self, a_pcb):
         self.pcb_table.running_pcb = a_pcb
 
-    def register(self, pcbs_stats):
-        for data in pcbs_stats:
-            if self._exist_pid(data):
-                self._add_status(data, pcbs_stats[data][1])
-            else:
-                self.stats[data] = dict()
-                self.stats[data][RUNNING_STATUS] = 0
-                self.stats[data][READY_STATUS] = 0
-                self._add_status(data, pcbs_stats[data][1])
-        if self.pcb_table.all_end():
-            self._show_stats()
-
-    def _show_stats(self):
-        total_tat = 0
-        total_wt = 0
-        for pid in self.stats:
-            process_wt = self.stats[pid][READY_STATUS]
-            process_tat = process_wt + self.stats[pid][RUNNING_STATUS]
-            total_tat += process_tat
-            total_wt += process_wt
-            self._show_process_info(pid, process_tat, process_wt)
-
-        self._show_total_stats(total_tat, total_wt)
-        self._show_average(total_tat, total_wt)
-
-        # apagamos la cpu para que se puedan analizar los datos
-        HARDWARE.switchOff()
-
-    def _exist_pid(self, pid):
-        for pid_key in self.stats.keys():
-            if pid == pid_key: return True
-        return False
-
-    def _show_process_info(self, pid, process_tat, process_wt):
-        log.logger.info("Process: {pid} -> Waiting Time {wt} | Turnaround Time:{tat}"
-                        .format(pid=pid, tat=process_tat, wt=process_wt))
-
-    def _show_average(self, total_tat, total_wt):
-        log.logger.info("Average Waiting Time: {a_wt} | Average Turnaround Time: {a_tat}"
-                        .format(a_wt=total_wt / len(self.stats),
-                                a_tat=total_tat / len(self.stats)))
-
-    def _show_total_stats(self, total_tat, total_wt):
-        log.logger.info("Total Waiting Time: {t_wt} | Total Turnaround Time: {t_tat}"
-                        .format(t_wt=total_wt, t_tat=total_tat))
-
-    def _add_status(self, pid, status):
-        if self._is_ready_or_running(status):
-            self.stats[pid][status] += 1
-
-    def _is_ready_or_running(self, status):
-        return status == RUNNING_STATUS or status == READY_STATUS
-
     @property
     def io_device_controller(self):
         return self._ioDeviceController
@@ -136,8 +85,8 @@ class Kernel:
         self._scheduler = new_scheduler
 
     @property
-    def stats(self):
-        return self._stats
+    def stats_manager(self):
+        return self._stats_manager
 
     def __repr__(self):
         return "Kernel "
