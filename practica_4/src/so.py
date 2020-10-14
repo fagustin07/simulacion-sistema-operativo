@@ -55,6 +55,12 @@ class Kernel:
     def run_next(self):
         self.scheduler.run_next()
 
+    def register(self,pcbs_stats):
+        self._stats_manager.register(pcbs_stats)
+        if self.pcb_table.all_end():
+            self._stats_manager.show_stats()
+            HARDWARE.switchOff()
+
     ## emulates a "system call" for programs execution
     def run(self, path, priority):
         newIRQ = IRQ(NEW_INTERRUPTION_TYPE, [path, priority])
@@ -84,9 +90,8 @@ class Kernel:
     def scheduler(self, new_scheduler):
         self._scheduler = new_scheduler
 
-    @property
-    def stats_manager(self):
-        return self._stats_manager
+    def stats(self):
+        return self._stats_manager.stats
 
     def __repr__(self):
         return "Kernel "

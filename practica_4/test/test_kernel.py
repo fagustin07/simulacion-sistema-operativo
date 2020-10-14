@@ -94,7 +94,7 @@ class KernelTest(unittest.TestCase):
         HARDWARE.clock.do_ticks(13)
         expected_stats = {0: {'RUNNING': 5, 'READY': 0}, 1: {'RUNNING': 5, 'READY': 5}, 2: {'RUNNING': 2, 'READY': 10}}
         self.assertTrue(self.kernel.pcb_table.all_end())
-        self.assertEqual(expected_stats,self.kernel.stats_manager.stats)
+        self.assertEqual(expected_stats,self.kernel.stats())
 
 
 if __name__ == '__main__':

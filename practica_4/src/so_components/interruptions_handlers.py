@@ -89,4 +89,4 @@ class StatsInterruptionHandler(AbstractInterruptionHandler):
         for pcb in pcbs:
             stats[pcb.pid] = [tick_number, pcb.status]
 
-        self.kernel.stats_manager.register(stats)
+        self.kernel.register(stats)

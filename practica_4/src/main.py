@@ -55,6 +55,8 @@ if __name__ == '__main__':
     setUpDisk()
 
     # execute programs
+    # Best algorithm for execute this programs are SJF-preemtive with a WT:3.8 and TAT: 8.2,
+    # followed by Round-Robin quantum=3 with WT:5.8 and TAT 10.2
     kernel.run('C:/Program Files(x86)/pyCharm/pyCharm.exe', 3)
     kernel.run('C:/Program Files(x86)/calculadora/suma.exe', 11)
     kernel.run('C:/Users/ATRR/Rock Stars/GTA V/gta-v.exe', 5)

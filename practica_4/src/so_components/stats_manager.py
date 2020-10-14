@@ -1,4 +1,4 @@
-from src import tabulate
+from src import tabulate, log
 from src.hardware import HARDWARE
 from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS
 
@@ -23,18 +23,16 @@ class StatsManager:
         return self._info_for_stats
 
     def register(self, pcbs_stats):
-        for data in pcbs_stats:
-            if self._exist_pid(data):
-                self._add_status(data, pcbs_stats[data][1])
+        for pid in pcbs_stats:
+            if self._exist_pid(pid):
+                self._add_status(pid, pcbs_stats[pid][1])
             else:
-                self.stats[data] = dict()
-                self.stats[data][RUNNING_STATUS] = 0
-                self.stats[data][READY_STATUS] = 0
-                self._add_status(data, pcbs_stats[data][1])
-        if self.kernel.pcb_table.all_end():
-            self._show_stats()
+                self.stats[pid] = dict()
+                self.stats[pid][RUNNING_STATUS] = 0
+                self.stats[pid][READY_STATUS] = 0
+                self._add_status(pid, pcbs_stats[pid][1])
 
-    def _show_stats(self):
+    def show_stats(self):
         total_tat = 0
         total_wt = 0
         for pid in self.stats:
@@ -42,18 +40,16 @@ class StatsManager:
             process_tat = process_wt + self.stats[pid][RUNNING_STATUS]
             total_tat += process_tat
             total_wt += process_wt
-            self.info_for_stats.append([pid, process_wt, process_wt])
+            self.info_for_stats.append([pid, process_wt, process_tat])
 
         self.info_for_stats.append(["Total", total_wt, total_tat])
         self.info_for_stats.append(["Average", (total_wt / len(self.stats)), (total_tat / len(self.stats))])
 
-        print(
+        log.logger.info(
             tabulate.tabulate(headers=["Process", "Waiting Time", "Turnaround time"],
                               tabular_data=self.info_for_stats,
                               tablefmt="pipe")
         )
-
-        HARDWARE.switchOff()
 
     def _exist_pid(self, pid):
         for pid_key in self.stats.keys():
