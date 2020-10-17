@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/so-unq-2020-jueves/grupo_4.svg?token=cykm2ScxHwJVfFcZRzNY&branch=development)](https://travis-ci.com/so-unq-2020-jueves/grupo_4)
+
 # Práctica 4
 ## Scheduler
 
