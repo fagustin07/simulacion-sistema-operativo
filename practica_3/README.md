@@ -1,4 +1,7 @@
-# Práctica 3
+# Práctica 3 (OK)
+
+> En general en python no se usa `src` como módulo.
+
 ## Multiprogramación
 
 
@@ -20,7 +23,7 @@ Por otro lado, solo pueden ejecutar una operacion a la vez, con lo cual nuestro 
 Para ello implementamos un __IoDeviceController__ que es el encargado de "manejar" el device, encolando los pedidos para ir sirviendolos a medida que el dispositivo se libere.
 
 
-También se incluyeron 2 interrupciones 
+También se incluyeron 2 interrupciones
 
 - __#IO_IN__
 - __#IO_OUT__
@@ -31,7 +34,7 @@ También se incluyeron 2 interrupciones
 
 - __1:__ Describir como funciona el __MMU__ y que datos necesitamos para correr un proceso
 
-<em>El  MMU es el encargado de manejar la transformacion de direcciones logicas del cpu en la direccion fisica real del programa. 
+<em>El  MMU es el encargado de manejar la transformacion de direcciones logicas del cpu en la direccion fisica real del programa.
 Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza la operación llamada “fetch” que se encarga de buscar la siguiente instrucción del programa en ejecucion en la memoria, haciendo el mencionado traspaso de direccion logica a direccion fisica para obtener la direccion real de la instrucción. Posteriormente, realiza la lectura de la direccion fisica en memoria. </em>
 
 - __2:__ Entender las clases __IoDeviceController__, __PrinterIODevice__ y poder explicar como funcionan
@@ -40,7 +43,7 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
 
 - __3:__ Explicar cómo se llegan a ejecutar __IoInInterruptionHandler.execute()__ y  __IoOutInterruptionHandler.execute()__
 
-<em> Luego de que la CPU lee la direccion de memoria del programa(realizando el procedimiento previamente mencionado donde el MMU forma parte), y luego de que se decodifica esta instruccion(en nuestro simulador aun no se realiza la decodificacion) la instrucción del programa es ejecutada y en su ejecucion se lleva a cabo un determinado chequeo para constatar el tipo de instrucción del cual se trata. Si esta instrucción fuera de IOIN, la CPU genera una interrupcion de tipo IoInInterruption, la cual es manejada por el vector de interrupciones que se encarga de gestionar todas las interrupciones existentes. Este vector recibe la instrucción IO del programa y ejecuta el metodo correspondiente proveniente del IoInInterruptionHandler.</em>  
+<em> Luego de que la CPU lee la direccion de memoria del programa(realizando el procedimiento previamente mencionado donde el MMU forma parte), y luego de que se decodifica esta instruccion(en nuestro simulador aun no se realiza la decodificacion) la instrucción del programa es ejecutada y en su ejecucion se lleva a cabo un determinado chequeo para constatar el tipo de instrucción del cual se trata. Si esta instrucción fuera de IOIN, la CPU genera una interrupcion de tipo IoInInterruption, la cual es manejada por el vector de interrupciones que se encarga de gestionar todas las interrupciones existentes. Este vector recibe la instrucción IO del programa y ejecuta el metodo correspondiente proveniente del IoInInterruptionHandler.</em>
 
 <em> Luego de que el IoInInterruptionHandler guarde la informacion del estado actual del programa, cambie su estado a Waiting y le indique al IODeviceController que corra la instrucción IO (la cual sera ejecutada por el IO device siempre y cuando este no tenga ninguna otra instrucción corriendo, caso contrario se agregara a la waiting queue), el IO device levanta una interrupcion IoOutInterruption la cual es gestionada nuevamente por el vector de interrupciones. Este realiza el execute del IoOutInterruptionHandler, el cual se encarga de poner el programa de nuevo en cpu o el la ready queue.  </em>
 
@@ -63,8 +66,8 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
 
 
 - __5:__ Hay que tener en cuenta que los procesos se van a intentar ejecutar todos juntos ("concurrencia"), pero como solo tenemos un solo CPU, vamos a tener que administrar su uso de forma óptima.
-      Como el S.O. es una "maquina de estados", donde las cosas "pasan" cada vez que se levanta una interrupcion (IRQ) vamos a tener que programar las 4 interrupciones que conocemos:  
-    
+      Como el S.O. es una "maquina de estados", donde las cosas "pasan" cada vez que se levanta una interrupcion (IRQ) vamos a tener que programar las 4 interrupciones que conocemos:
+
     - Cuando se crea un proceso (__#NEW__) se debe intentar hacerlo correr en la CPU, pero si la CPU ya esta ocupada, debemos mantenerlo en la cola de Ready.
     - Cuando un proceso entre en I/O (__#IO_IN__), debemos cambiar el proceso corriendo en CPU (__"running"__) por otro, para optimizar el uso de __CPU__
     - Cuando un proceso sale en I/O (__#IO_OUT__), se debe intentar hacerlo correr en la CPU, pero si la CPU ya esta ocupada, debemos mantenerlo en la cola de Ready.
@@ -72,11 +75,11 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
 
 .
 
-- __6:__ Ahora si, a programar... tenemos que "evolucionar" nuestro S.O. para que soporte __multiprogramación__  
+- __6:__ Ahora si, a programar... tenemos que "evolucionar" nuestro S.O. para que soporte __multiprogramación__
 
 - __6.1:__ Implementar la interrupción #NEW
     ```python
-    # Kernel.run() debe lanzar una interrupcion de #New para que se resuelva luego por el S.O. 
+    # Kernel.run() debe lanzar una interrupcion de #New para que se resuelva luego por el S.O.
     ###################
 
     ## emulates a "system call" for programs execution
@@ -85,14 +88,14 @@ Cuando la CPU intenta acceder a una direccion logica de memoria, el MMU realiza 
         self._interruptVector.handle(newIRQ)
     ```
 
-- __6.2:__ Implementar los compoenentes del S.O.: 
+- __6.2:__ Implementar los compoenentes del S.O.:
     - Loader
     - Dispatcher
     - PCB
     - PCB Table
     - Ready Queue
-    - Las 4 interrupciones: 
-        - __#NEW__ 
+    - Las 4 interrupciones:
+        - __#NEW__
         - __#IO_IN__
         - __#IO_OUT__
         - __#KILL__
