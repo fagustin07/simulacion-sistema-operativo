@@ -8,3 +8,6 @@ class FileSystem:
 
     def take(self, path):
         return self._programs[path]
+
+
+FILESYSTEM = FileSystem()

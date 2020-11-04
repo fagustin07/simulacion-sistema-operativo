@@ -7,7 +7,7 @@ class PCBTableTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.pcb_table = PCBTable()
-        self.pcb = PCB(self.pcb_table.ask_pid(), 0, 5, 'hello.exe', 5)
+        self.pcb = PCB(self.pcb_table.ask_pid(), 'hello.exe', 5)
 
     def test_pcbTableProvidePIDToNewPCB(self):
         self.assertEqual(self.pcb.pid, self.pcb_table.pid - 1)

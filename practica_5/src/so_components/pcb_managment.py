@@ -50,10 +50,9 @@ class PCBTable:
 
 class PCB:
 
-    def __init__(self, pid, frame_Table, path, priority):
+    def __init__(self, pid, path, priority):
         self._pid = pid
         self._path = path
-        self._page_table = frame_Table
         self._priority = priority
         self._status = NEW_STATUS
         self._pc = 0

@@ -15,7 +15,7 @@ class AbstractScheduling:
     def run_pcb(self, a_pcb):
         a_pcb.status = RUNNING_STATUS
         self.kernel.change_running_pcb(a_pcb)
-        DISPATCHER.load(a_pcb)
+        DISPATCHER.load(a_pcb,self.kernel)
 
     def run_next(self):
         self.run_pcb(self.next())

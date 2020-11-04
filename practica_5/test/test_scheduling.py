@@ -13,7 +13,7 @@ class SchedulersTest(unittest.TestCase):
         HARDWARE.setup(10000)
         new_pid = PCBTable().ask_pid()
         self.kernel = Kernel()
-        self.new_pcb = PCB(new_pid, 0, 76, 'tests.exe', 6)
+        self.new_pcb = PCB(new_pid, 'tests.exe', 6)
         self.schedulerFCFS = FCFSScheduling(self.kernel)
         self.schedulerPriorityExpropiative = PriorityScheduling(self.kernel, must_expropriate=True)
         self.schedulerPriorityNoExpropiative = PriorityScheduling(self.kernel, must_expropriate=False)
@@ -33,18 +33,18 @@ class SchedulersTest(unittest.TestCase):
 
         self.schedulerPriorityExpropiative.run_pcb(self.new_pcb)
 
-        high_priority_pcb = PCB(4, 77, 89, 'e.exe', 0)
+        high_priority_pcb = PCB(4,'e.exe', 0)
         self.schedulerPriorityExpropiative.add(high_priority_pcb)
 
         self.assertEqual(high_priority_pcb, self.schedulerPriorityExpropiative.kernel.running_pcb())
         self.assertEqual(RUNNING_STATUS, high_priority_pcb.status)
         self.assertEqual(READY_STATUS, self.new_pcb.status)
 
-    def test_scheduler_priority_non_preemptibe(self):
+    def test_scheduler_priority_non_preemptive(self):
         self.kernel.scheduler = self.schedulerPriorityNoExpropiative
         self.schedulerPriorityNoExpropiative.run_pcb(self.new_pcb)
 
-        high_priority_pcb = PCB(4, 77, 89, 'e.exe', 0)
+        high_priority_pcb = PCB(4, 'e.exe', 0)
         self.schedulerPriorityNoExpropiative.add(high_priority_pcb)
 
         self.assertEqual(self.new_pcb, self.schedulerPriorityNoExpropiative.kernel.running_pcb())

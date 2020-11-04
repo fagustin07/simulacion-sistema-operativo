@@ -25,7 +25,8 @@ class NewInterruptionHandler(AbstractInterruptionHandler):
         frames_table = LOADER.load(self.kernel, path)
         priority = irq.parameters[1]
 
-        new_pcb = PCB(pid, frames_table, path, priority)
+        new_pcb = PCB(pid, path, priority)
+        self.kernel.memory_manager.put_page_table(pid, frames_table)
         self.kernel.pcb_table.add(new_pcb)
 
         self.kernel.run_or_add_to_ready_queue(new_pcb)

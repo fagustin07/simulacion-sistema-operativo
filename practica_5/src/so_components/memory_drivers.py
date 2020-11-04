@@ -41,8 +41,8 @@ class Dispatcher:
     def __init__(self):
         pass
 
-    def load(self, a_pcb):
-        page_table = a_pcb.page_table
+    def load(self, a_pcb, kernel):
+        page_table = kernel.memory_manager.get_page_table(a_pcb.pid)
         HARDWARE.timer.reset()
         HARDWARE.mmu.resetTLB()
         logical_pages = page_table.keys()
@@ -53,7 +53,7 @@ class Dispatcher:
         HARDWARE.cpu.pc = a_pcb.pc
 
     def save(self, a_pcb, kernel):
-        kernel.memory_manager.free_frames(a_pcb.page_table.keys())
+        kernel.memory_manager.free_frames(a_pcb.pid)
         a_pcb.pc = HARDWARE.cpu.pc
         HARDWARE.cpu.pc = -1
 
