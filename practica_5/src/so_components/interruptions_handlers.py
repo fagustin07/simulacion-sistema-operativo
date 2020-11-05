@@ -40,9 +40,9 @@ class NewInterruptionHandler(AbstractInterruptionHandler):
 class KillInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
-        log.logger.info(" Program Finished ")
-
         pcb_to_kill = self.kernel.running_pcb()
+        log.logger.info(" Process with PID {pid} Finished.".format(pid=pcb_to_kill.pid))
+
         pcb_to_kill.status = FINISHED_STATUS
         self.kernel.change_running_pcb(None)
         DISPATCHER.save(pcb_to_kill, self.kernel)
