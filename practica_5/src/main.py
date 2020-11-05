@@ -6,6 +6,10 @@ from src.hardware import HARDWARE, ASM
 ##
 from src.so import Kernel
 from src.so_components.helpers import generate
+from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
+from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
+from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
+from src.so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
 
 
 def setUpFileSystem(kernel):

@@ -50,19 +50,16 @@ class PCBTable:
 
 class PCB:
 
-    def __init__(self, pid, path, priority):
+    def __init__(self, pid, path, instructions_size, priority):
         self._pid = pid
         self._path = path
+        self._instructions_size = instructions_size
         self._priority = priority
         self._status = NEW_STATUS
         self._pc = 0
 
     def is_finished(self):
         return self.status==FINISHED_STATUS
-
-    @property
-    def page_table(self):
-        return self._page_table
 
     @property
     def pc(self):
@@ -100,7 +97,7 @@ class PCB:
         return "PID: {pid} -> PATH: {name}".format(pid=self.pid, name=self._path)
 
     def burst(self):
-        return self.limit - self.base_dir
+        return self._instructions_size - self.pc
 
     def __gt__(self, pcb_in_queue):
         return self.burst() > pcb_in_queue.burst()

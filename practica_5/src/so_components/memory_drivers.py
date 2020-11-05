@@ -33,7 +33,7 @@ class Loader:
             pcb_frames_table[index_table] = page
             index_table += 1
 
-        return pcb_frames_table
+        return [pcb_frames_table, len(instructions)]
 
 
 class Dispatcher:

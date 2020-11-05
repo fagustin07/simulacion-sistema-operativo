@@ -15,7 +15,7 @@ class AbstractComparativeScheduling(AbstractScheduling):
         if self._is_preemptive and self.must_expropiate(pcb_to_add):
             expropriated_pcb = self.kernel.running_pcb()
             self.kernel.change_running_pcb(None)
-            DISPATCHER.save(expropriated_pcb)
+            DISPATCHER.save(expropriated_pcb, self.kernel)
 
             self.add_to_ready_queue(expropriated_pcb)
             self.run_pcb(pcb_to_add)

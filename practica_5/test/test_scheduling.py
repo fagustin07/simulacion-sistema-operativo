@@ -1,6 +1,6 @@
 import unittest
 
-from src.hardware import HARDWARE
+from src.hardware import HARDWARE, ASM
 from src.so import Kernel
 from src.so_components.pcb_managment import PCBTable, PCB, READY_STATUS, RUNNING_STATUS
 from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
@@ -9,11 +9,25 @@ from src.so_components.scheduling_algorithms.priority_scheduling import Priority
 
 class SchedulersTest(unittest.TestCase):
 
+    def load_programs(self):
+        instructions_1 = ASM.CPU(4)
+        instructions_1.extend(ASM.EXIT(1))
+
+        instructions_2 = [ASM.IO()]
+        instructions_2.extend(ASM.EXIT(1))
+
+        instructions_3 = ASM.CPU(1)
+        instructions_3.extend(ASM.EXIT(1))
+
+        self.kernel.file_system.save('C:/Program Files(x86)/pyCharm/pyCharm.exe', instructions_1)
+        self.kernel.file_system.save('C:/Users/ATRR/Download/vlc-setup.msi', instructions_2)
+        self.kernel.file_system.save('C:/Users/ATRR/Download/java.exe', instructions_3)
+
+
     def setUp(self) -> None:
         HARDWARE.setup(10000)
-        new_pid = PCBTable().ask_pid()
         self.kernel = Kernel()
-        self.new_pcb = PCB(new_pid, 'tests.exe', 6)
+        self.load_programs()
         self.schedulerFCFS = FCFSScheduling(self.kernel)
         self.schedulerPriorityExpropiative = PriorityScheduling(self.kernel, must_expropriate=True)
         self.schedulerPriorityNoExpropiative = PriorityScheduling(self.kernel, must_expropriate=False)
@@ -23,33 +37,35 @@ class SchedulersTest(unittest.TestCase):
         self.assertTrue(self.schedulerPriorityNoExpropiative.is_empty())
         self.assertTrue(self.schedulerPriorityExpropiative.is_empty())
 
-    def test_scheduler_can_add_new_pcbs(self):
-        self.schedulerFCFS.run_pcb(self.new_pcb)
-
-        self.assertEqual(self.new_pcb, self.schedulerFCFS.kernel.running_pcb())
+    def test_scheduler_can_add_new_process(self):
+        self.kernel.scheduler = self.schedulerFCFS
+        self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', None)
+        self.assertEqual(self.kernel.running_pcb(), self.schedulerFCFS.kernel.running_pcb())
 
     def test_scheduling_priority_preemptive(self):
         self.kernel.scheduler = self.schedulerPriorityExpropiative
+        self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 8)
+        low_priority_pcb = self.kernel.pcb_table.table[0]
 
-        self.schedulerPriorityExpropiative.run_pcb(self.new_pcb)
-
-        high_priority_pcb = PCB(4,'e.exe', 0)
-        self.schedulerPriorityExpropiative.add(high_priority_pcb)
+        self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 1)
+        high_priority_pcb = self.kernel.pcb_table.table[1]
 
         self.assertEqual(high_priority_pcb, self.schedulerPriorityExpropiative.kernel.running_pcb())
         self.assertEqual(RUNNING_STATUS, high_priority_pcb.status)
-        self.assertEqual(READY_STATUS, self.new_pcb.status)
+        self.assertEqual(READY_STATUS, low_priority_pcb.status)
 
     def test_scheduler_priority_non_preemptive(self):
         self.kernel.scheduler = self.schedulerPriorityNoExpropiative
-        self.schedulerPriorityNoExpropiative.run_pcb(self.new_pcb)
+        self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 8)
+        low_priority_pcb = self.kernel.pcb_table.table[0]
 
-        high_priority_pcb = PCB(4, 'e.exe', 0)
-        self.schedulerPriorityNoExpropiative.add(high_priority_pcb)
+        self.kernel.run('C:/Users/ATRR/Download/vlc-setup.msi', 1)
+        high_priority_pcb = self.kernel.pcb_table.table[1]
 
-        self.assertEqual(self.new_pcb, self.schedulerPriorityNoExpropiative.kernel.running_pcb())
+
+        self.assertEqual(low_priority_pcb, self.schedulerPriorityNoExpropiative.kernel.running_pcb())
         self.assertEqual(READY_STATUS, high_priority_pcb.status)
-        self.assertEqual(RUNNING_STATUS, self.new_pcb.status)
+        self.assertEqual(RUNNING_STATUS, low_priority_pcb.status)
 
 
 if __name__ == '__main__':
