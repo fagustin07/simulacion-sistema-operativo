@@ -2,3 +2,5 @@ Practicas:
 - Diagramas de Gantt: https://docs.google.com/spreadsheets/d/1blq4zThfbT1QcQ-gMiHjb_PgETF83TKNWxHCsLypHsU/edit?usp=sharing
     
 - Asignacion Continua: https://docs.google.com/spreadsheets/d/1Fxhf01ZGgW35pjt2u4_CeJjUxCKlPSWRuLyhQTgS664/edit?usp=sharing
+
+- Ejercicio Paginacion: https://docs.google.com/spreadsheets/d/1DDlK77AHgVoto2G0zA1ogN3kATcFFeKNe_MbZ0XRJjk/edit?usp=sharing
