@@ -45,7 +45,8 @@ class KillInterruptionHandler(AbstractInterruptionHandler):
 
         pcb_to_kill.status = FINISHED_STATUS
         self.kernel.change_running_pcb(None)
-        DISPATCHER.save(pcb_to_kill, self.kernel)
+        DISPATCHER.save(pcb_to_kill)
+        self.kernel.memory_manager.free_frames(pcb_to_kill.pid)
 
         self.kernel.run_next_if_exist()
 
@@ -56,7 +57,7 @@ class IoInInterruptionHandler(AbstractInterruptionHandler):
         operation = irq.parameters
         io_in_pcb = self.kernel.running_pcb()
         self.kernel.change_running_pcb(None)
-        DISPATCHER.save(io_in_pcb, self.kernel)
+        DISPATCHER.save(io_in_pcb)
         io_in_pcb.status = WAITING_STATUS
 
         self.kernel.io_device_controller.runOperation(io_in_pcb, operation)
@@ -78,7 +79,7 @@ class TimeoutInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         run_pcb = self.kernel.running_pcb()
-        DISPATCHER.save(run_pcb, self.kernel)
+        DISPATCHER.save(run_pcb)
         self.kernel.change_running_pcb(None)
 
         self.kernel.scheduler.add_to_ready_queue(run_pcb)

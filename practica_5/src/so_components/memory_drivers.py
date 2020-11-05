@@ -52,8 +52,7 @@ class Dispatcher:
 
         HARDWARE.cpu.pc = a_pcb.pc
 
-    def save(self, a_pcb, kernel):
-        kernel.memory_manager.free_frames(a_pcb.pid)
+    def save(self, a_pcb):
         a_pcb.pc = HARDWARE.cpu.pc
         HARDWARE.cpu.pc = -1
 
