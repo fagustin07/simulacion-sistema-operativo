@@ -3,7 +3,7 @@
 # Práctica 4 (OK)
 ## Scheduler
 
-> Para tener en cuenta en python los folders (con `__init.py__`) son módulo. En general no se usa src como nombre de módulo.
+> Para tener en cuenta en python los folders (con `__init.py__`) son módulos. En general no se usa src como nombre de módulo.
 
 Ahora que tenemos un sistema multiprogramación, necesitamos optimizar el uso del __CPU__.
 
