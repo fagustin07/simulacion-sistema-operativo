@@ -1,4 +1,4 @@
-#Practicas:
+# Practicas:
 
 - Ejercicios Diagramas de Gantt: https://docs.google.com/spreadsheets/d/1blq4zThfbT1QcQ-gMiHjb_PgETF83TKNWxHCsLypHsU/edit?usp=sharing
     
