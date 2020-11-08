@@ -6,3 +6,5 @@ Practicas:
 - Ejercicios Paginacion: https://docs.google.com/spreadsheets/d/1DDlK77AHgVoto2G0zA1ogN3kATcFFeKNe_MbZ0XRJjk/edit?usp=sharing
 
 - Ejercicios Page Fault: https://docs.google.com/spreadsheets/d/17GZGLzAurTXfS_s2hEujOe5c9okhOlvLsAiiT4jPnFo/edit?usp=sharing
+
+- Ejercicios Seleccion de víctima: https://docs.google.com/spreadsheets/d/1RsEiW9R9xhATJ0hoCW2YCtUJt2Tn5BbABtrSx-jwFek/edit?usp=sharing
