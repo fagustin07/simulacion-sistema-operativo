@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.com/so-unq-2020-jueves/grupo_4.svg?token=cykm2ScxHwJVfFcZRzNY&branch=development)](https://travis-ci.com/so-unq-2020-jueves/grupo_4)
 
-# Práctica 4
+# Práctica 4 (OK)
 ## Scheduler
+
+> Para tener en cuenta en python los folders (con `__init.py__`) son módulo. En general no se usa src como nombre de módulo.
 
 Ahora que tenemos un sistema multiprogramación, necesitamos optimizar el uso del __CPU__.
 
@@ -14,16 +16,16 @@ Para esto vamos a tener que implementar algunos de los algoritmos de planificaci
 
 - __1:__ A partir de ahora vamos a usar el codigo de la práctica anterior como base de la actual.... hacer copy/paste del so.py de la practica anterior
 
-- __2:__ Implementar el componente __Scheduler__ que será el encargado de administrar la __ready queue__. 
+- __2:__ Implementar el componente __Scheduler__ que será el encargado de administrar la __ready queue__.
 
 
 - __3:__ Implementar al menos estas variantes de scheduling :
   - FCFS
-  - Priority no expropiativo 
+  - Priority no expropiativo
   - Round Robin
-  - Priority expropiativo 
+  - Priority expropiativo
 
-  Nuestro sistema operativo se ejecutará con un solo Scheduler a la vez, pero es requerido que podamos intercambiarlo "en Frio", es decir, bajar el S.O., configurar el Scheduler y volver a levantar todo desde cero con el nuevo algoritmo de planificación 
+  Nuestro sistema operativo se ejecutará con un solo Scheduler a la vez, pero es requerido que podamos intercambiarlo "en Frio", es decir, bajar el S.O., configurar el Scheduler y volver a levantar todo desde cero con el nuevo algoritmo de planificación
 
 
 
@@ -53,7 +55,7 @@ Para implementar esto, pueden agregar un IRQ Handler para el tipo: STAT_INTERRUP
     HARDWARE.cpu.enable_stats = True
 ```
 
-- Para saber cual es el tick actual dentro del handler, podemos pedirselo al Clock del Hardware: 
+- Para saber cual es el tick actual dentro del handler, podemos pedirselo al Clock del Hardware:
 ```python
     HARDWARE.clock.currentTick
 ```
