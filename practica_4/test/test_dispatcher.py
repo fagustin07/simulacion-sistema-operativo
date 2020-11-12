@@ -1,8 +1,8 @@
 import unittest
 
-from src.hardware import ASM, HARDWARE
-from src.so_components.memory_drivers import Loader, Dispatcher
-from src.so_components.pcb_managment import PCB
+from hardware import ASM, HARDWARE
+from so_components.memory_drivers import Loader, Dispatcher
+from so_components.pcb_managment import PCB
 
 
 class DispatcherTest(unittest.TestCase):

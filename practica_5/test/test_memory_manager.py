@@ -1,6 +1,6 @@
 import unittest
 
-from src.so_components.memory_manager import MemoryManager
+from so_components.memory_manager import MemoryManager
 
 
 class MemoryManagerTest(unittest.TestCase):

@@ -1,10 +1,10 @@
 import unittest
 
-from src.hardware import ASM, HARDWARE
-from src.so import Kernel
-from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS, WAITING_STATUS, FINISHED_STATUS
-from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
-from src.so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
+from hardware import ASM, HARDWARE
+from so import Kernel
+from so_components.pcb_managment import RUNNING_STATUS, READY_STATUS, WAITING_STATUS, FINISHED_STATUS
+from so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
+from so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
 
 
 

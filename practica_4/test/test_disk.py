@@ -1,8 +1,8 @@
 import unittest
 
-from src.hardware import INSTRUCTION_CPU, INSTRUCTION_IO, INSTRUCTION_EXIT, ASM
-from src.so_components.disk import Disk
-from src.so_components.helpers import generate
+from hardware import ASM
+from so_components.disk import Disk
+from so_components.helpers import generate
 
 
 class DiskTest(unittest.TestCase):

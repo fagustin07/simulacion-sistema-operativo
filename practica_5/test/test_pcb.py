@@ -1,7 +1,7 @@
 import unittest
 
-from src.so_components.pcb_managment import PCB, NEW_STATUS
-from src.so_components.scheduling_algorithms.priority_scheduling import PCBInPriorityReadyQueue
+from so_components.pcb_managment import PCB, NEW_STATUS
+from so_components.scheduling_algorithms.priority_scheduling import PCBInPriorityReadyQueue
 
 
 class PCBTest(unittest.TestCase):

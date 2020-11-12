@@ -1,10 +1,10 @@
 import unittest
 
-from src.hardware import HARDWARE, ASM
-from src.so import Kernel
-from src.so_components.pcb_managment import PCBTable, PCB, READY_STATUS, RUNNING_STATUS
-from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
-from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
+from hardware import HARDWARE, ASM
+from so import Kernel
+from so_components.pcb_managment import READY_STATUS, RUNNING_STATUS
+from so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
+from so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
 
 
 class SchedulersTest(unittest.TestCase):
