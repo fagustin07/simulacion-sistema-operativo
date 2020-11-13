@@ -2,14 +2,14 @@ import log
 from hardware import HARDWARE, ASM
 
 ##
-##  MAIN 
+#  MAIN
 ##
 from so import Kernel
 from so_components.helpers import generate
 from so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
 
 
-def setUpFileSystem(kernel):
+def setup_file_system(kernel):
     instructions_1 = generate([ASM.CPU(3), ASM.IO(), ASM.CPU(2), ASM.CPU(3)])
     instructions_2 = generate([ASM.CPU(1), ASM.IO()])
     instructions_3 = generate([ASM.IO(), ASM.CPU(2)])
@@ -25,12 +25,12 @@ if __name__ == '__main__':
     log.setupLogger()
     log.logger.info('Starting emulator')
 
-    ## setup our hardware and set memory size to 9999 "cells"
+    # setup our hardware and set memory size to 9999 "cells"
     HARDWARE.setup(40)
 
-    ## Switch on computer
+    # Switch on computer
     HARDWARE.switchOn()
-    ## new create the Operative System Kernel
+    # new create the Operative System Kernel
     # Kernel have FCFS algorithm by default.
     kernel = Kernel()
 
@@ -45,10 +45,10 @@ if __name__ == '__main__':
     # shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
     # shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
 
-    # kernel.scheduler = priority_preemptive
+    # kernel.scheduler = your_scheduler
 
     HARDWARE.cpu.enable_stats = True
-    setUpFileSystem(kernel)
+    setup_file_system(kernel)
 
     # execute programs
     # Best algorithm for execute this programs are SJF-preemtive with a WT:3.8 and TAT: 8.2,
