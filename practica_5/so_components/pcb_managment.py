@@ -62,6 +62,10 @@ class PCB:
         return self.status==FINISHED_STATUS
 
     @property
+    def path(self):
+        return self._path
+
+    @property
     def pc(self):
         return self._pc
 

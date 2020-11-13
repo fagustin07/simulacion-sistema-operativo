@@ -10,8 +10,8 @@ class Loader:
     def free_cell(self):
         return self._free_cell
 
-    def load(self, kernel, path):
-        instructions = kernel.file_system.take(path)
+    def load(self, kernel, a_pcb):
+        instructions = kernel.file_system.take(a_pcb.path)
         frame_size = HARDWARE.mmu.frameSize
         ask_pages = len(instructions) // frame_size
         if ((len(instructions) % frame_size) != 0):
@@ -33,7 +33,7 @@ class Loader:
             pcb_frames_table[index_table] = page
             index_table += 1
 
-        return [pcb_frames_table, len(instructions)]
+        kernel.memory_manager.put_page_table(a_pcb.pid,pcb_frames_table)
 
 
 class Dispatcher:
