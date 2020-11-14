@@ -1,5 +1,5 @@
-from src.so_components.pcb_managment import READY_STATUS
-from src.so_components.scheduling_algorithms.abstract_scheduling import AbstractScheduling
+from so_components.pcb_managment import READY_STATUS
+from so_components.scheduling_algorithms.abstract_scheduling import AbstractScheduling
 
 
 class AbstractNoComparativeScheduling(AbstractScheduling):

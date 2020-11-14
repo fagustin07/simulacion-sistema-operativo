@@ -1,4 +1,4 @@
-from src.hardware import ASM, INSTRUCTION_EXIT
+from hardware import ASM, INSTRUCTION_EXIT
 
 
 def generate(instructions):

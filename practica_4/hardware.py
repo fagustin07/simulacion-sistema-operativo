@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from src import log
 from time import sleep
 from threading import Thread, Lock
 
 ##  Estas son la instrucciones soportadas por nuestro CPU
-from src.so_components.disk import Disk
+from so_components.disk import Disk
+import log
 
 INSTRUCTION_IO = 'IO'
 INSTRUCTION_CPU = 'CPU'

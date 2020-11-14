@@ -1,15 +1,13 @@
-from src import log
-from src.hardware import HARDWARE, ASM
+import log
+from hardware import HARDWARE, ASM
 
 ##
 ##  MAIN 
 ##
-from src.so import Kernel
-from src.so_components.helpers import generate
-from src.so_components.scheduling_algorithms.fcfs_scheduling import FCFSScheduling
-from src.so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
-from src.so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
-from src.so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
+from so import Kernel
+from so_components.helpers import generate
+from so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
+from so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
 
 
 def setUpDisk():
@@ -44,12 +42,12 @@ if __name__ == '__main__':
 
     # first_come_first_serve = FCFSScheduling(kernel)
     # round_robin = RoundRobinScheduling(kernel, 3)
-    # priority_preemptive = PriorityScheduling(kernel, must_expropriate=True)
+    priority_preemptive = PriorityScheduling(kernel, must_expropriate=True)
     # priority_non_preemptive = PriorityScheduling(kernel, must_expropriate=False)
     # shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
     # shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
 
-    # kernel.scheduler = your_scheduler
+    kernel.scheduler = priority_preemptive
 
     HARDWARE.cpu.enable_stats = True
     setUpDisk()

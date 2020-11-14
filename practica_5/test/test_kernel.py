@@ -7,26 +7,30 @@ from so_components.scheduling_algorithms.round_robin_scheduling import RoundRobi
 from so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
 
 
-def load_programs():
-    instructions_1 = ASM.CPU(4)
-    instructions_1.extend(ASM.EXIT(1))
-
-    instructions_2 = [ASM.IO()]
-    instructions_2.extend(ASM.EXIT(1))
-
-    instructions_3 = ASM.CPU(1)
-    instructions_3.extend(ASM.EXIT(1))
-
-    HARDWARE.disk.save('C:/Program Files(x86)/pyCharm/pyCharm.exe', instructions_1)
-    HARDWARE.disk.save('C:/Users/ATRR/Download/vlc-setup.msi', instructions_2)
-    HARDWARE.disk.save('C:/Users/ATRR/Download/java.exe', instructions_3)
 
 
 class KernelTest(unittest.TestCase):
+
+    def load_programs(self):
+        instructions_1 = ASM.CPU(4)
+        instructions_1.extend(ASM.EXIT(1))
+
+        instructions_2 = [ASM.IO()]
+        instructions_2.extend(ASM.EXIT(1))
+
+        instructions_3 = ASM.CPU(1)
+        instructions_3.extend(ASM.EXIT(1))
+
+        self.kernel.file_system.save('C:/Program Files(x86)/pyCharm/pyCharm.exe', instructions_1)
+        self.kernel.file_system.save('C:/Users/ATRR/Download/vlc-setup.msi', instructions_2)
+        self.kernel.file_system.save('C:/Users/ATRR/Download/java.exe', instructions_3)
+
     def setUp(self) -> None:
         HARDWARE.setup(50)
         self.kernel = Kernel()
-        load_programs()
+        self.load_programs()
+
+
 
     def test_kernel_make_new_pcb_and_run_that(self):
         HARDWARE.clock.do_ticks(2)

@@ -1,4 +1,4 @@
-from src.hardware import HARDWARE
+from hardware import HARDWARE
 
 
 class Loader:

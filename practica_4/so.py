@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-from src.hardware import *
-from src.hardware import HARDWARE
-from src.so_components.interruptions_handlers import *
-from src.so_components.io_device_controller import IoDeviceController
-from src.so_components.pcb_managment import PCBTable
-from src.so_components.scheduling_algorithms.fcfs_scheduling import *
+from hardware import *
+from hardware import HARDWARE
+from so_components.io_device_controller import IoDeviceController
+from so_components.pcb_managment import PCBTable
+from so_components.interruptions_handlers import *
+from so_components.scheduling_algorithms.fcfs_scheduling import *
 
 # emulates the core of an Operative System
-from src.so_components.stats_manager import StatsManager
+from so_components.stats_manager import StatsManager
 
 
 class Kernel:

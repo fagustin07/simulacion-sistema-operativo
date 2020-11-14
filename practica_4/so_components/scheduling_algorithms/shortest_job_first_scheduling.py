@@ -1,6 +1,6 @@
 from heapq import heappush, heappop
-from src.so_components.pcb_managment import READY_STATUS
-from src.so_components.scheduling_algorithms.abstract_comparative_scheduling import AbstractComparativeScheduling
+from so_components.pcb_managment import READY_STATUS
+from so_components.scheduling_algorithms.abstract_comparative_scheduling import AbstractComparativeScheduling
 
 
 class ShortestJobFirstScheduling(AbstractComparativeScheduling):

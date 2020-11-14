@@ -1,6 +1,6 @@
-from src import tabulate, log
-from src.hardware import HARDWARE
-from src.so_components.pcb_managment import RUNNING_STATUS, READY_STATUS
+import tabulate
+import log
+from so_components.pcb_managment import RUNNING_STATUS, READY_STATUS
 
 
 class StatsManager:

@@ -1,7 +1,7 @@
 import abc
 from heapq import heapify
-from src.so_components.memory_drivers import DISPATCHER
-from src.so_components.scheduling_algorithms.abstract_scheduling import AbstractScheduling
+from so_components.memory_drivers import DISPATCHER
+from so_components.scheduling_algorithms.abstract_scheduling import AbstractScheduling
 
 
 class AbstractComparativeScheduling(AbstractScheduling):

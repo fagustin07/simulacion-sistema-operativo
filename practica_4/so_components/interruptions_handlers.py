@@ -1,7 +1,7 @@
-from src import log
-from src.hardware import HARDWARE
-from src.so_components.memory_drivers import LOADER, DISPATCHER
-from src.so_components.pcb_managment import WAITING_STATUS, FINISHED_STATUS, PCB
+from hardware import HARDWARE
+from so_components.memory_drivers import LOADER, DISPATCHER
+import log
+from so_components.pcb_managment import WAITING_STATUS, FINISHED_STATUS, PCB
 
 
 ## emulates the  Interruptions Handlers
