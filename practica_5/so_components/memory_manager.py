@@ -26,7 +26,7 @@ class MemoryManager():
 
     def free_frames(self,pid):
         pageTable = self.pages_tables[pid]
-        self.frames.extend(pageTable.keys())
+        self.frames.extend(pageTable.values())
 
     def put_page_table(self, pid, pageTable):
         self.pages_tables[pid] = pageTable
