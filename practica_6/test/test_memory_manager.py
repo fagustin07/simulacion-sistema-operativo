@@ -23,7 +23,7 @@ class MemoryManagerTest(unittest.TestCase):
     def setUp(self) -> None:
         self.memory_manager = MemoryManager(40, 4)
         self.load_programs(self.memory_manager)
-        HARDWARE.setup(5)
+        HARDWARE.setup(8)
         HARDWARE.mmu.frameSize = 4
 
     def test_memory_manager_alloc_frames(self):

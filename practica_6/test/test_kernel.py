@@ -24,7 +24,7 @@ class KernelTest(unittest.TestCase):
         self.kernel.memory_manager.file_system.save('C:/Users/ATRR/Download/java.exe', instructions_3)
 
     def setUp(self) -> None:
-        HARDWARE.setup(50)
+        HARDWARE.setup(8)
         self.kernel = Kernel()
         self.load_programs()
 

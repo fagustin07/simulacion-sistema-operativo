@@ -24,7 +24,7 @@ class SchedulersTest(unittest.TestCase):
         self.kernel.memory_manager.file_system.save('C:/Users/ATRR/Download/java.exe', instructions_3)
 
     def setUp(self) -> None:
-        HARDWARE.setup(10000)
+        HARDWARE.setup(4)
         self.kernel = Kernel()
         self.load_programs()
         self.schedulerFCFS = FCFSScheduling(self.kernel)
