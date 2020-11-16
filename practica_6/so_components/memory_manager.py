@@ -48,6 +48,11 @@ class MemoryManager:
             return self._do_swap_in(page_in_swap_memory, pcb.pid)
 
     def swap_out(self, page):
+        for offset in range(0, len(page.instructions)):
+            frame_base_dir = HARDWARE.mmu.frameSize * page.frame_id
+            physical_address = frame_base_dir + offset
+            page.instructions[offset] = HARDWARE.memory.read(physical_address)
+
         page.frame_id = None
         self._update_table(None, page.page_id, page.pid)
         self._swap_memory.append(page)
