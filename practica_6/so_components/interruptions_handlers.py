@@ -28,7 +28,6 @@ class NewInterruptionHandler(AbstractInterruptionHandler):
 
         new_pcb = PCB(pid, path, len(instructions), priority)
 
-        # LOADER.load(self.kernel, new_pcb)
         frame_size = HARDWARE.mmu.frameSize
         ask_pages = len(instructions) // frame_size
         if (len(instructions) % frame_size) != 0:
@@ -110,5 +109,4 @@ class PageFaultInterruptionHandler(AbstractInterruptionHandler):
 
     def execute(self, irq):
         page = irq.parameters
-        frame = LOADER.load(self.kernel, page)
-        HARDWARE.mmu.setPageFrame(page, frame)
+        LOADER.load(self.kernel, page)
