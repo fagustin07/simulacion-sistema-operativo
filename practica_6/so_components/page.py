@@ -1,11 +1,9 @@
 class Page:
-    def __init__(self, path, pageId, frameId, instructions, pid):
-        self._path = path
+    def __init__(self, pageId, frameId, instructions, pid):
         self._pageId = pageId
         self._pid = pid
         self._frameId = frameId
         self._instructions = instructions
-        self._is_swapped = False
 
     @property
     def pid(self):
@@ -14,10 +12,6 @@ class Page:
     @property
     def page_id(self):
         return self._pageId
-
-    @property
-    def path(self):
-        return self._path
 
     @property
     def frame_id(self):

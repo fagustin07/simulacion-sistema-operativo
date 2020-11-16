@@ -41,7 +41,7 @@ class MemoryManager:
 
         if page_in_swap_memory is None:
             instructions = self._obtain_page(pcb.path, page_id)
-            page = Page(pcb.path, page_id, None, instructions, pcb.pid)
+            page = Page(page_id, None, instructions, pcb.pid)
             return self._do_swap_in(page, pcb.pid)
         else:
             self.swap_memory.remove(page_in_swap_memory)
