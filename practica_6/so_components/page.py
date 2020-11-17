@@ -4,6 +4,15 @@ class Page:
         self._pid = pid
         self._frameId = frameId
         self._instructions = instructions
+        self._second_chance_bit = 1
+
+    @property
+    def second_chance_bit(self):
+        return self._second_chance_bit
+
+    @second_chance_bit.setter
+    def second_chance_bit(self, bit):
+        self._second_chance_bit = bit
 
     @property
     def pid(self):

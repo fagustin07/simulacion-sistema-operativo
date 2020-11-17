@@ -28,7 +28,7 @@ if __name__ == '__main__':
     log.logger.info('Starting emulator')
 
     # setup our hardware and set memory size limited to 4 "cells"
-    HARDWARE.setup(4)
+    HARDWARE.setup(8)
 
     # Switch on computer
     HARDWARE.switchOn()
@@ -44,10 +44,10 @@ if __name__ == '__main__':
     # round_robin = RoundRobinScheduling(kernel, 3)
     # priority_preemptive = PriorityScheduling(kernel, must_expropriate=True)
     # priority_non_preemptive = PriorityScheduling(kernel, must_expropriate=False)
-    shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
+    # shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
     # shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
 
-    kernel.scheduler = shortest_job_first_preemptive
+    # kernel.scheduler = priority_preemptive
 
     HARDWARE.cpu.enable_stats = True
     setup_file_system(kernel)

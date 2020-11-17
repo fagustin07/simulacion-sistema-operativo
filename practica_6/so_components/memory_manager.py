@@ -2,6 +2,7 @@ from hardware import HARDWARE
 from so_components.file_system import FileSystem
 from so_components.page import Page
 from so_components.victim_selector_algorithms.victim_selector_FIFO import VictimSelectorFIFO
+from so_components.victim_selector_algorithms.victim_selector_second_chance import VictimSelectorSecondChance
 
 
 class MemoryManager:
@@ -23,7 +24,11 @@ class MemoryManager:
 
     def free_frames(self, pid):
         page_table = self.pages_tables[pid]
-        self.frames.extend(page_table.values())
+
+        for frame in page_table.values():
+            if frame is not None:
+                self.frames.append(frame)
+
         for page in self.swap_memory:
             if page.pid == pid:
                 self.swap_memory.remove(page)
@@ -58,6 +63,7 @@ class MemoryManager:
         self._swap_memory.append(page)
 
     def _do_swap_in(self, page, pid):
+        frame_to_write = None
         if len(self.frames) > 0:
             frame_to_write = self.alloc_frame()
             page.frame_id = frame_to_write
