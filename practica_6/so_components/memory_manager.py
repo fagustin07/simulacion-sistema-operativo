@@ -16,7 +16,7 @@ class MemoryManager:
         self._file_system = FileSystem()
         for i in range(0, total_pages):
             self.frames.append(i)
-        self._algorithm = VictimSelectorSecondChance(self)
+        self._algorithm = VictimSelectorLRU(self)
 
     @property
     def algorithm(self):
@@ -68,7 +68,6 @@ class MemoryManager:
         self._swap_memory.append(page)
 
     def _do_swap_in(self, page, pid):
-        frame_to_write = None
         if len(self.frames) > 0:
             frame_to_write = self.alloc_frame()
             page.frame_id = frame_to_write
@@ -102,8 +101,8 @@ class MemoryManager:
                 i += 1
         return instrs
 
-    def update_counter(self,pid):
-        self.algorithm.update_counter(pid)
+    def update_counter(self, pcb):
+        self.algorithm.update_counter(pcb)
 
     @property
     def frames(self):

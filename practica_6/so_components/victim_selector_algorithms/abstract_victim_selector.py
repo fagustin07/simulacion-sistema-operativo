@@ -1,5 +1,8 @@
 import abc
 
+from hardware import HARDWARE
+
+
 class AbstractVictimSelector:
     def __init__(self, memory_manager):
         self._memory_manager = memory_manager
@@ -14,14 +17,14 @@ class AbstractVictimSelector:
         return self._memory_manager
 
     def insert(self, page):
+        page.counter = HARDWARE.clock.currentTick
         self._frames_memory.append(page)
 
     @abc.abstractmethod
-    def put(self,page):
+    def put(self, page):
         pass
 
-    @abc.abstractmethod
-    def update_counter(self, pid):
+    def update_counter(self, pcb):
         pass
 
     def free_frames(self, pid):

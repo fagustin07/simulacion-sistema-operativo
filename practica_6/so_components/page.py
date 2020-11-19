@@ -5,7 +5,7 @@ class Page:
         self._frameId = frameId
         self._instructions = instructions
         self._second_chance_bit = 1
-        self ._counter = 0
+        self ._counter = None
 
     @property
     def second_chance_bit(self):
