@@ -43,6 +43,7 @@ NEW_INTERRUPTION_TYPE = "#NEW"
 TIMEOUT_INTERRUPTION_TYPE = "#TIMEOUT"
 STAT_INTERRUPTION_TYPE = "#STAT"
 PAGE_FAULT_INTERRUPTION_TYPE = "#PAGE_FAULT"
+LRU_INTERRUPTION_TYPE = "#LRU"
 
 ## emulates an Interrupt request
 class IRQ:
@@ -224,6 +225,7 @@ class Cpu():
 
     def tick(self, tickNbr):
         self._stats()
+        self._lru()
         if (self.isBusy()):
             self._fetch()
             self._decode()
@@ -243,6 +245,10 @@ class Cpu():
         if self._enable_stats:
             statsIRQ = IRQ(STAT_INTERRUPTION_TYPE)
             self._interruptVector.handle(statsIRQ)
+
+    def _lru(self):
+        lruIRQ = IRQ(LRU_INTERRUPTION_TYPE)
+        self._interruptVector.handle(lruIRQ)
 
     def _execute(self):
         if ASM.isEXIT(self._ir):

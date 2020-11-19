@@ -5,10 +5,19 @@ class Page:
         self._frameId = frameId
         self._instructions = instructions
         self._second_chance_bit = 1
+        self ._counter = 0
 
     @property
     def second_chance_bit(self):
         return self._second_chance_bit
+
+    @property
+    def counter(self):
+        return self._counter
+
+    @counter.setter
+    def counter(self,value):
+        self._counter = value
 
     @second_chance_bit.setter
     def second_chance_bit(self, bit):

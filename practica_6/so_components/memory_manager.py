@@ -2,6 +2,7 @@ from hardware import HARDWARE
 from so_components.file_system import FileSystem
 from so_components.page import Page
 from so_components.victim_selector_algorithms.victim_selector_FIFO import VictimSelectorFIFO
+from so_components.victim_selector_algorithms.victim_selector_LRU import VictimSelectorLRU
 from so_components.victim_selector_algorithms.victim_selector_second_chance import VictimSelectorSecondChance
 
 
@@ -15,7 +16,11 @@ class MemoryManager:
         self._file_system = FileSystem()
         for i in range(0, total_pages):
             self.frames.append(i)
-        self.algorithm = VictimSelectorFIFO(self)
+        self._algorithm = VictimSelectorSecondChance(self)
+
+    @property
+    def algorithm(self):
+        return self._algorithm
 
     def alloc_frame(self):
         actual = self.frames[0]
@@ -96,6 +101,9 @@ class MemoryManager:
                 instrs.append(instructions[i])
                 i += 1
         return instrs
+
+    def update_counter(self,pid):
+        self.algorithm.update_counter(pid)
 
     @property
     def frames(self):

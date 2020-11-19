@@ -38,6 +38,9 @@ class Kernel:
         pageFaultHandler = PageFaultInterruptionHandler(self)
         HARDWARE.interruptVector.register(PAGE_FAULT_INTERRUPTION_TYPE, pageFaultHandler)
 
+        lruHandler = LRUInterruptionHandler(self)
+        HARDWARE.interruptVector.register(LRU_INTERRUPTION_TYPE,lruHandler)
+
         ## controls the Hardware's I/O Device
         self._ioDeviceController = IoDeviceController(HARDWARE.ioDevice)
 

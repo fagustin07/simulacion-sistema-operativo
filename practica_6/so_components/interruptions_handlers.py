@@ -110,3 +110,11 @@ class PageFaultInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         page = irq.parameters
         LOADER.load(self.kernel, page)
+
+class LRUInterruptionHandler(AbstractInterruptionHandler):
+
+    def execute(self, irq):
+        pcb = self.kernel.running_pcb()
+        page = None
+        if(pcb is not None):
+            self.kernel.memory_manager.update_counter(pcb.pid)

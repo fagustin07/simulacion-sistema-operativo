@@ -20,6 +20,10 @@ class AbstractVictimSelector:
     def put(self,page):
         pass
 
+    @abc.abstractmethod
+    def update_counter(self, pid):
+        pass
+
     def free_frames(self, pid):
         for page in self.frames_memory:
             if page.pid == pid:
