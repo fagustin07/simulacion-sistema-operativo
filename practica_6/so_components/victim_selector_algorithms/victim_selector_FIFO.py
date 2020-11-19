@@ -1,5 +1,6 @@
 from so_components.victim_selector_algorithms.abstract_victim_selector import *
 
+
 class VictimSelectorFIFO(AbstractVictimSelector):
     def __init__(self, memory_manager):
         super().__init__(memory_manager)

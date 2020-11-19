@@ -117,4 +117,4 @@ class LRUInterruptionHandler(AbstractInterruptionHandler):
     def execute(self, irq):
         actual_pcb = self.kernel.running_pcb()
         if actual_pcb is not None:
-            self.kernel.memory_manager.update_counter(actual_pcb)
+            self.kernel.memory_manager.update_reference(actual_pcb)

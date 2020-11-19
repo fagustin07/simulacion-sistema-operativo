@@ -2,8 +2,6 @@ from hardware import HARDWARE
 from so_components.file_system import FileSystem
 from so_components.page import Page
 from so_components.victim_selector_algorithms.victim_selector_FIFO import VictimSelectorFIFO
-from so_components.victim_selector_algorithms.victim_selector_LRU import VictimSelectorLRU
-from so_components.victim_selector_algorithms.victim_selector_second_chance import VictimSelectorSecondChance
 
 
 class MemoryManager:
@@ -16,11 +14,7 @@ class MemoryManager:
         self._file_system = FileSystem()
         for i in range(0, total_pages):
             self.frames.append(i)
-        self._algorithm = VictimSelectorLRU(self)
-
-    @property
-    def algorithm(self):
-        return self._algorithm
+        self._algorithm = VictimSelectorFIFO(self)
 
     def alloc_frame(self):
         actual = self.frames[0]
@@ -67,6 +61,9 @@ class MemoryManager:
         self._update_table(None, page.page_id, page.pid)
         self._swap_memory.append(page)
 
+    def update_reference(self, pcb):
+        self.algorithm.update_reference(pcb)
+
     def _do_swap_in(self, page, pid):
         if len(self.frames) > 0:
             frame_to_write = self.alloc_frame()
@@ -101,9 +98,6 @@ class MemoryManager:
                 i += 1
         return instrs
 
-    def update_counter(self, pcb):
-        self.algorithm.update_counter(pcb)
-
     @property
     def frames(self):
         return self._frames
@@ -119,3 +113,11 @@ class MemoryManager:
     @property
     def swap_memory(self):
         return self._swap_memory
+
+    @property
+    def algorithm(self):
+        return self._algorithm
+
+    @algorithm.setter
+    def algorithm(self, an_algorithm):
+        self._algorithm = an_algorithm

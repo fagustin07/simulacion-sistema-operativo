@@ -1,10 +1,10 @@
 from so_components.victim_selector_algorithms.abstract_victim_selector import AbstractVictimSelector
 
+
 class VictimSelectorSecondChance(AbstractVictimSelector):
     def __init__(self, memory_manager):
         super().__init__(memory_manager)
         self._aguja = 0
-
 
     @property
     def aguja(self):
@@ -33,5 +33,5 @@ class VictimSelectorSecondChance(AbstractVictimSelector):
 
         return page.frame_id
 
-    def next(self,number):
-            return (number + 1) % (len(self.frames_memory))
+    def next(self, number):
+        return (number + 1) % (len(self.frames_memory))

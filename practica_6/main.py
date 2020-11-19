@@ -9,6 +9,9 @@ from so_components.helpers import generate
 from so_components.scheduling_algorithms.priority_scheduling import PriorityScheduling
 from so_components.scheduling_algorithms.round_robin_scheduling import RoundRobinScheduling
 from so_components.scheduling_algorithms.shortest_job_first_scheduling import ShortestJobFirstScheduling
+from so_components.victim_selector_algorithms.victim_selector_FIFO import VictimSelectorFIFO
+from so_components.victim_selector_algorithms.victim_selector_LRU import VictimSelectorLRU
+from so_components.victim_selector_algorithms.victim_selector_second_chance import VictimSelectorSecondChance
 
 
 def setup_file_system(kernel):
@@ -47,7 +50,18 @@ if __name__ == '__main__':
     # shortest_job_first_preemptive = ShortestJobFirstScheduling(kernel, must_expropriate=True)
     # shortest_job_first_non_preemtive = ShortestJobFirstScheduling(kernel, must_expropriate=False)
 
-    # kernel.scheduler = priority_preemptive
+    # kernel.scheduler = your_scheduler
+
+    # VICTIM SELECTOR ALGORITHMS.
+    # Remove comment over line 63 and from algorithm who you wants to use and reemplace
+    # `your_algorithm` for selected victim selector algorithm.
+
+    lru = VictimSelectorLRU(kernel.memory_manager)
+    # fifo = VictimSelectorFIFO(kernel.memory_manager)
+    # snd_chance = VictimSelectorSecondChance(kernel.memory_manager)
+
+    kernel.memory_manager.algorithm = lru
+    # kernel.memory_manager.algorithm = your_algorithm
 
     HARDWARE.cpu.enable_stats = True
     setup_file_system(kernel)

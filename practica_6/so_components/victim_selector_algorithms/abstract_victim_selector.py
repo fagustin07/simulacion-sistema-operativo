@@ -17,14 +17,14 @@ class AbstractVictimSelector:
         return self._memory_manager
 
     def insert(self, page):
-        page.counter = HARDWARE.clock.currentTick
+        page.last_reference = HARDWARE.clock.currentTick
         self._frames_memory.append(page)
 
     @abc.abstractmethod
     def put(self, page):
         pass
 
-    def update_counter(self, pcb):
+    def update_reference(self, pcb):
         pass
 
     def free_frames(self, pid):
