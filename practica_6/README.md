@@ -1,4 +1,4 @@
-# Práctica 6
+# Práctica 6 (OK)
 ## Paginación Bajo Demanda
 
 Implementar Paginación Bajo Demanda usando como base la práctica anterior.

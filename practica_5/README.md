@@ -1,4 +1,6 @@
-# Práctica 5
+# Práctica 5 (OK)
+
+> Quizás hubiese sido bueno dejar configurable el tamaño de página para pruebas.
 ## Paginación
 
 Ahora que tenemos un sistema multiprogramación con diferentes schedulers para elegir, necesitamos optimizar el uso de la __Memoria__.
@@ -22,4 +24,3 @@ Para esto vamos a tener que administrar la memoria física como vimos en la teor
 - __6:__ Modificar el __#New__ Handler para cargar el programa desde un path. 
 
 - __7:__ Modificar el __#Kill__ Handler para que se libere la memoria del programa, una vez que se termina su ejecución.
-
